@@ -40,7 +40,7 @@ $result_products->execute();
                 
                 </div>
                 <div class="carousel-item">
-                <a href="/brutus-main/cardapio.php#kids">
+                <a href="/brutus/cardapio.php#kids">
                     <img src="img\bannerkids.svg" class="d-block w-100" alt="...">
                 </div>
                 <!--<div class="carousel-item">
