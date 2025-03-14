@@ -55,7 +55,7 @@
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$ $preco</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
-                            <button class="comp btn w-100">Comprar</button>
+                            <button class="comp btn w-100 comprar">Comprar</button>
                     </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$ $preco</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
-                            <button class="comp btn w-100">Comprar</button>
+                            <button class="comp btn w-100 comprar">Comprar</button>
                     </div>
                     </div>
                 </div>
@@ -114,7 +114,7 @@
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$ $preco</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
-                            <button class="comp btn w-100">Comprar</button>
+                            <button class="comp btn w-100 comprar">Comprar</button>
                     </div>
                     </div>
                 </div>
@@ -143,7 +143,7 @@
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$ $preco</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
-                            <button class="comp btn w-100">Comprar</button>
+                            <button class="comp btn w-100 comprar">Comprar</button>
                     </div>
                     </div>
                 </div>
@@ -172,7 +172,7 @@
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$ $preco</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
-                            <button class="comp btn w-100">Comprar</button>
+                            <button class="comp btn w-100 comprar">Comprar</button>
                     </div>
                 </div>
             </div>
@@ -201,7 +201,7 @@
                                 echo"<h5 class='card-title'>$nome</h5>";
                                 echo"<p class='card-text'>R$ $preco</p>";
                                 echo"<p class='card-text'>$descricao</p>"; ?>
-                                <button class="comp btn w-100">Comprar</button>
+                                <button class="comp btn w-100 comprar">Comprar</button>
                         </div>
                     </div>
                 </div>
