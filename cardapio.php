@@ -36,7 +36,7 @@
         $result_products->execute();
     ?>
     <div class="container my-5">
-        <h2 class="text-center mb-4"><a name='hamburguer'>HAMBURGUER ARTESANAL</a></h2>
+        <h2 class="text-center mb-4"><a name='hamburguer'>Hámburguer Artesanal</a></h2>
 		<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3">
             <?php 
             $contador = 0;
@@ -124,7 +124,7 @@
             $result_products = $conn->prepare($query_products);
             $result_products->execute();?>
             <div class="container my-5">
-        <h2 class="text-center mb-4 "><a name='acompanhamento'>ACOMPANHAMENTO</a></h2>
+        <h2 class="text-center mb-4 "><a name='acompanhamento'>Acompanhamento</a></h2>
 		<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3">
             <?php 
             $contador = 0;
@@ -153,7 +153,7 @@
             $result_products = $conn->prepare($query_products);
             $result_products->execute();?>
             <div class="container my-5">
-                <h2 class="text-center mb-4 "><a name='bebidas'>BEBIDAS</a></h2>
+                <h2 class="text-center mb-4 "><a name='bebidas'>Bebidas</a></h2>
 		        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 g-3">
                 <?php 
                 $contador = 0;
@@ -182,7 +182,7 @@
             $result_products = $conn->prepare($query_products);
             $result_products->execute();?>
             <div class="container my-5">
-                <h2 class="text-center mb-4 "><a name='sobremesa'>SOBREMESAS</a></h2>
+                <h2 class="text-center mb-4 "><a name='sobremesa'>Sobremesa</a></h2>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 g-3">
                 <?php 
                 $contador = 0;
