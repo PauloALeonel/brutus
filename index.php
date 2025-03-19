@@ -74,7 +74,7 @@ $result_products->execute();
                     <img src='produtos/<?php echo $imagem; ?>' class='card-img-top' alt='Produto <?php echo $contador; ?>'>
                     <div class='card-body'>
                         <h5 class='card-title'><?php echo $nome; ?></h5>
-                        <p class='card-preco'>R$ <?php echo $preco; ?></p>
+                        <p class='card-text'>R$ <?php echo number_format($preco, 2, ',', '.');?></p>
                         <p class='card-text'><?php echo $descricao; ?></p>
                         <button class='comp btn w-100 comprar'>Comprar</button>
                     </div>

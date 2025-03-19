@@ -53,7 +53,7 @@
                     <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                             echo "<div class='card-body'>";
                             echo"<h5 class='card-title'>$nome</h5>";
-                            echo"<p class='card-text'>R$ $preco</p>";
+                            echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
                             <button class="comp btn w-100 comprar">Comprar</button>
                     </div>
@@ -82,7 +82,7 @@
                     <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                             echo "<div class='card-body'>";
                             echo"<h5 class='card-title'>$nome</h5>";
-                            echo"<p class='card-text'>R$ $preco</p>";
+                            echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
                             <button class="comp btn w-100 comprar">Comprar</button>
                     </div>
@@ -112,7 +112,7 @@
                     <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                             echo "<div class='card-body'>";
                             echo"<h5 class='card-title'>$nome</h5>";
-                            echo"<p class='card-text'>R$ $preco</p>";
+                            echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
                             <button class="comp btn w-100 comprar">Comprar</button>
                     </div>
@@ -141,7 +141,7 @@
                     <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                             echo "<div class='card-body'>";
                             echo"<h5 class='card-title'>$nome</h5>";
-                            echo"<p class='card-text'>R$ $preco</p>";
+                            echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
                             <button class="comp btn w-100 comprar">Comprar</button>
                     </div>
@@ -170,7 +170,7 @@
                     <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                             echo "<div class='card-body'>";
                             echo"<h5 class='card-title'>$nome</h5>";
-                            echo"<p class='card-text'>R$ $preco</p>";
+                            echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
                             <button class="comp btn w-100 comprar">Comprar</button>
                     </div>
@@ -199,7 +199,7 @@
                         <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                                 echo "<div class='card-body'>";
                                 echo"<h5 class='card-title'>$nome</h5>";
-                                echo"<p class='card-text'>R$ $preco</p>";
+                                echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
                                 echo"<p class='card-text'>$descricao</p>"; ?>
                                 <button class="comp btn w-100 comprar">Comprar</button>
                         </div>
