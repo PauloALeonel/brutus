@@ -10,12 +10,7 @@ session_start(); // Inicie a sessão aqui, antes de qualquer HTML
     <link rel="icon" href="..\img\favicon.svg" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="custom.css"> 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="custom.css"> 
-    
-    <link rel="stylesheet" href="..\custom.css ">
+    <link rel="stylesheet" href="../geral.css"> 
 </head>
 <body>
 
@@ -27,7 +22,7 @@ session_start(); // Inicie a sessão aqui, antes de qualquer HTML
         <div class="col-12">
           <div class="mb-5 login" >
             <h2 class="display-5 fw-bold text-center login">Login </h2>
-            <p class="text-center m-0 login">Não tem conta? <a href="..\..\brutus-main\cadastro\cadastrar.php">Cadastre-se</a></p>
+            <p class="text-center m-0 login">Não tem conta? <a href="..\cadastro\cadastrar.php">Cadastre-se</a></p>
           </div>
         </div>
       </div>

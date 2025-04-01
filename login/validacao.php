@@ -30,7 +30,12 @@ $linha = mysqli_fetch_assoc($result);
 if ($qtdREGISTRO > 0) {
     $c = $linha["fk_tipos_usuario_codigo"];
     $_SESSION['id_logado'] = $linha['codigo'];
-    header('Location: /brutus-main/index.php'); // Redireciona para a página inicial
+    if($c == 2){
+        header('Location: ../userdata.php'); // Redireciona para a página inicial
+    } elseif($c == 1){
+        header('Location: ../admproduto/painel.html'); // Redireciona para a página inicial
+    }
+    
 } else {
     $_SESSION['erro_login'] = 'E-mail ou senha incorretos!'; // Mensagem de erro
     header('Location: login.php'); // Redireciona para a página de login

@@ -7,12 +7,8 @@
     <link rel="icon" href="..\img\favicon.svg" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="custom.css"> 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="custom.css"> 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../custom.css">
+    <link rel="stylesheet" href="../geral.css"> 
+    <link rel="stylesheet" href="cardapio.css"> 
     <style>
         .comp{
             background-color:saddlebrown;
@@ -22,7 +18,7 @@
 </head>
 <body>
     <?php 
-        include_once "cabecalho.html";
+        include_once "../cabecalho.html";
         $host = "localhost";
         $database = "brutus";
         $username = "root";
@@ -50,7 +46,7 @@
                 <!--produto-->
                 <div class="col">
                     <div class="card">
-                    <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
+                    <?php   echo "<img src='../produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                             echo "<div class='card-body'>";
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
@@ -79,7 +75,7 @@
                 <!--produto-->
                 <div class="col">
                     <div class="card">
-                    <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
+                    <?php   echo "<img src='../produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                             echo "<div class='card-body'>";
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
@@ -109,7 +105,7 @@
                 <!--produto-->
                 <div class="col">
                     <div class="card">
-                    <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
+                    <?php   echo "<img src='../produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                             echo "<div class='card-body'>";
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
@@ -138,7 +134,7 @@
                 <!--produto-->
                 <div class="col">
                     <div class="card">
-                    <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
+                    <?php   echo "<img src='../produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                             echo "<div class='card-body'>";
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
@@ -167,7 +163,7 @@
                 <!--produto-->
                 <div class="col">
                     <div class="card">
-                    <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
+                    <?php   echo "<img src='../produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                             echo "<div class='card-body'>";
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
@@ -196,7 +192,7 @@
                 <!--produto-->
                     <div class="col">
                         <div class="card">
-                        <?php   echo "<img src='produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
+                        <?php   echo "<img src='../produtos/$imagem' class='card-img-top' alt='Produto $contador'><br>";
                                 echo "<div class='card-body'>";
                                 echo"<h5 class='card-title'>$nome</h5>";
                                 echo"<p class='card-text'>R$" . number_format($preco, 2, ',', '.') . "</p>";
@@ -210,8 +206,9 @@
          </div>
             </div>
         </div>
-    
+    </div>
+    </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-        <?php include_once "rodape.html"; ?>
+        <?php include_once "../rodape.html"; ?>
 </body>
 </html>

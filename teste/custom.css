@@ -1,27 +1,9 @@
-@font-face {
-    font-family: 'Escopedia';
-    src: url('../teste/escopedia/Escopedia\ Regular.ttf') format('truetype'),
-         url('/escopedia/Escopedia Regular.woff2') format('woff2'),
-         url('/escopedia/Escopedia Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
 body {
     font-family: 'Escopedia',sans-serif !important;
-    background-color: black !important;
-    color: rgb(211, 108, 35) ;
 }
 
-a {
-    color: #fff2cc ;
-}
 
-input.form-control {
-    border: 2px solid saddlebrown !important; 
-}
-
-.navbar {
+.navbar { 
     background-color: black ;
     width: 100%;
     height: 100px;
@@ -30,18 +12,17 @@ input.form-control {
     justify-content: center;
 }
 
-.navbar-brand {
+.navbar-brand { /*rodapé*/
     font-size: 24px;
     font-weight: bold;
-    color: #fff2cc ;
+    color: #fff2cc ; /*cor letra link */
     display: flex;
     align-items: center;
 }
-.logo {
+.logo { /*titulos das páginas*/
     justify-content: center;
-    font-family: 'borcer',Borcer !important;
     font-size: 40px;
-    color: #f9f9f9 !important;
+    color: #f9f9f9 ; 
     display: flex;
     align-items: center ;
 }
@@ -223,3 +204,4 @@ input.form-control {
 body {
     background-color: black !important;
 }
+

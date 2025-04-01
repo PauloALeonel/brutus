@@ -1,0 +1,30 @@
+form { /*largura do formulario*/
+    width: 65%;
+}
+.mt-5{ /*alinha formulario ao centro*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mb-4{/*titulo do formulario*/
+    color: rgb(247, 245, 245);
+    font-weight: bolder;
+}
+
+label{/*nome dos campos*/
+    color: rgb(247, 245, 245);
+}
+
+.mt-4{/*botao de cadastrar*/
+    color: white;
+    font-size: 20px !important;
+}
+
+input{ /*borda dos inputs*/
+    border-color: black !important;
+}
+
+.btn-outline-secondary{ /*borda do botao mostrar senha*/
+    border-color: black !important;
+}

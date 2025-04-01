@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro | JANTA</title>
+    <title>Cadastro | BRUTUS</title>
+    <link rel="icon" href="..\img\favicon.svg" type="image/x-icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../custom.css">
+    <link rel="stylesheet" href="../geral.css">
+    <link rel="stylesheet" href="cadastro.css">
 </head>
 <body>
     
@@ -68,7 +70,7 @@
                 <div class="input-group">
                     <input type="password" class="form-control" id="senha" name="senha" placeholder="**********" required>
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary"style="background-color:saddlebrown;" type="button" onclick="togglePassword('senha')">Mostrar</button>
+                        <button class="btn btn-outline-secondary"style="background-color:#ef890d; color: white;" type="button" onclick="togglePassword('senha')">Mostrar</button>
                     </div>
                 </div>
             </div>
@@ -78,7 +80,7 @@
                 <div class="input-group">
                     <input type="password" class="form-control" id="confirmarSenha" name="confirmarSenha" placeholder="**********" required>
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" style="background-color: saddlebrown;" type="button" onclick="togglePassword('confirmSenha')">Mostrar</button>
+                        <button class="btn btn-outline-secondary" style="background-color: #ef890d; color: white;" type="button" onclick="togglePassword('confirmSenha')">Mostrar</button>
                     </div>
                 </div>
             </div>
@@ -90,7 +92,7 @@
                 </label>
             </div> 
     
-            <button type="submit" class="btn btn-block mt-4"  name="btnCadastrar" style="background-color: saddlebrown;"><a href="#">Criar Conta</a></button>
+            <button type="submit" class="btn btn-block mt-4"  name="btnCadastrar" style="background-color: #ef890d; color: white;">Criar Conta</button>
         </form>
     </div>
     <?php include_once "../rodape.html"; ?>

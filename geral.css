@@ -1,0 +1,84 @@
+body {
+    font-family: 'Escopedia',sans-serif !important;
+    color: rgb(211, 108, 35) ;
+    background-color: black !important;
+}
+
+.navbar { /* cabecalho */
+    background-color: black ;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-brand { /*rodapé*/
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff2cc ; /*cor letra link */
+    display: flex;
+    align-items: center;
+}
+
+.logo { /*titulos das páginas*/
+    justify-content: center;
+    font-size: 40px;
+    color: #f9f9f9 ; 
+    display: flex;
+    align-items: center ;
+}
+
+.logo0 img {
+    margin-top: -20px; /* Ajuste o valor para subir a logo */
+}
+
+.login {
+    color: #f9f9f9; /* usando apenas na tela de login, textos, google, facebook*/
+}
+
+.navbar-nav { /* centraliza cabecalho*/
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-item { /*links do cabecalho*/
+    text-align: center;
+}
+
+.nav-link {
+    color: #ffffff !important;
+    font-weight: bold !important;
+    font-size: 15px !important;
+    margin-right: 15px !important;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link:hover { /*efeito links cabecalho*/
+    color: #ef890d !important ;
+    transform: scale(1.1);
+}
+
+.navbar-icons { /* icone de carrinho e login*/
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    padding-right: 20px;
+}
+
+.navbar-icons a { /* icone de carrinho e login*/
+    color: #fff2cc ;
+    margin-left: 20px;
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.navbar-icons a:hover {/* icone de carrinho e login ao passar por cima*/
+    color: #ef890d ;
+}
+
+.mb-4{
+    color: white !important;
+}
