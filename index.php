@@ -1,5 +1,4 @@
 <?php 
-session_start();
 
 $host = "localhost"; 
 $database = "brutus"; 
@@ -22,7 +21,7 @@ $result_products->execute();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="geral.css"> 
-    <link rel="stylesheet" href="cardapio.css"> 
+    <link rel="stylesheet" href="cardapio/cardapio.css"> 
 </head>
 <body>
 
@@ -69,13 +68,14 @@ $result_products->execute();
             ?>
                 <div class="col">
                     <div class="card">
-                    <img src='produtos/<?php echo $imagem; ?>' class='card-img-top' alt='Produto <?php echo $contador; ?>'>
-                    <div class='card-body'>
-                        <h5 class='card-title'><?php echo $nome; ?></h5>
-                        <p class='card-text'>R$ <?php echo number_format($preco, 2, ',', '.');?></p>
-                        <p class='card-text'><?php echo $descricao; ?></p>
-                        <button class='comp btn w-100 comprar'>Comprar</button>
-                    </div>
+                        <img src='produtos/<?php echo $imagem; ?>' class='card-img-top' alt='Produto <?php echo $contador; ?>'>
+                        <div class='card-body'>
+                            <h5 class='card-title'><?php echo $nome; ?></h5>
+                            <p class='card-text'>R$ <?php echo $preco;?></p>
+                            <p class='card-text'><?php echo $descricao; ?></p>
+                            <button class='comp btn w-100 comprar'><?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?> Comprar</a></button>
+                        </div>
+                 
                 </div>
             </div>
             <?php } ?>

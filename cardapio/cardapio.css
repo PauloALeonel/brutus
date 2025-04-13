@@ -15,12 +15,16 @@
     display: block;
     transition: transform 0.3s ease;
 }
+.card-text{
+    color: black !important;
+}
 
 .card-title { /* titulo do produto */
     font-family: 'Escopedia',sans-serif !important;
     text-align: center;
     font-size: 1em; /*o titulo fica visivel*/
     font-weight: bold;
+    color: black !important;
 }
 
 .card-text,.card-body button { /*deixa todas as descrições de produtos com o mesmo tamanho*/
@@ -59,4 +63,9 @@
 
 .mb-4{ /*titulo do cardapio*/
     color: white !important;
+}
+
+.bt_comprar{
+    color: white !important;
+    text-decoration: none !important;
 }
