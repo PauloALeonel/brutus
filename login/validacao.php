@@ -33,7 +33,7 @@ if ($qtdREGISTRO > 0) {
     if($c == 2){
         header('Location: ../userdata.php'); // Redireciona para a página inicial
     } elseif($c == 1){
-        header('Location: ../admproduto/painel.html'); // Redireciona para a página inicial
+        header('Location: ../admproduto/painel.php'); // Redireciona para a página inicial
     }
     
 } else {

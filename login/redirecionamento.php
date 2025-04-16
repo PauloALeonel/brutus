@@ -10,7 +10,7 @@ if (!isset($_SESSION['id_logado'])) {
 // Verifica o tipo de usuário e redireciona
 if ($_SESSION['tipos_usuario'] == 1) {
     // Administrador
-    header('Location: ../admproduto/pagina.php');
+    header('Location: ../admproduto/painel.php');
 } else {
     // Cliente
     header('Location: ../userdata.php');

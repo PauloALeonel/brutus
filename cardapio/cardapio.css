@@ -20,7 +20,6 @@
 }
 
 .card-title { /* titulo do produto */
-    font-family: 'Escopedia',sans-serif !important;
     text-align: center;
     font-size: 1em; /*o titulo fica visivel*/
     font-weight: bold;
@@ -29,7 +28,6 @@
 
 .card-text,.card-body button { /*deixa todas as descrições de produtos com o mesmo tamanho*/
    /* opacity: 0;/*oculta a descrição*/
-    font-family: 'Escopedia',sans-serif !important;
     transition: opacity 0.3s ease;
     text-align: center;
     max-height: 6em; /* Limita altura ingredientes */
@@ -45,7 +43,6 @@
 }
 
 .comprar { /*formata o botao comprar*/
-    font-family: 'Escopedia',sans-serif !important;
     font-weight: bold !important;
     background-color: #ef890d !important; 
     color: #f9f9f9 !important;           
