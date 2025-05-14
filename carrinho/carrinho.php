@@ -132,10 +132,10 @@ session_start(); // abre a sessão
 									$nome = $linha[1];
 									$preco = str_replace("," , "" , $linha[3] );
 									$subtotal = $preco * $qtd;
-									$subtota= substr_replace($subtotal, '.', -2, 0);
-									$subtotal= number_format($subtota,2,",",".");
+									$subtota = substr_replace($subtotal, '.', -2, 0);
+									$subtotal = number_format($subtota,2,",",".");
 									$valor = substr_replace($preco, '.', -2, 0);
-									$valor= number_format($valor,2,",",".");
+									$valor = number_format($valor,2,",",".");
 									$total_carrinho += $subtota;
 									
 									echo "<div class='produto'>

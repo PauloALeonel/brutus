@@ -51,7 +51,7 @@
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$".$preco."</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
-                            <button class="comp btn w-100 comprar"><?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?> Comprar</a></button>
+                            <?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?><button class="comp btn w-100 comprar">Comprar</button></a>
                     </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$" .$preco. "</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
-                            <button class="comp btn w-100 comprar"><?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?> Comprar</a></button>
+                            <?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?><button class="comp btn w-100 comprar"> Comprar</button></a>
                     </div>
                     </div>
                 </div>
@@ -110,7 +110,7 @@
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$" .$preco. "</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
-                            <button class="comp btn w-100 comprar"><?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?> Comprar</a></button>
+                            <?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?> <button class="comp btn w-100 comprar">Comprar</button></a>
                     </div>
                     </div>
                 </div>
@@ -139,7 +139,7 @@
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$" .$preco. "</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
-                            <button class="comp btn w-100 comprar"><?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?> Comprar</a></button>
+                            <?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?><button class="comp btn w-100 comprar">Comprar</button></a>
                     </div>
                     </div>
                 </div>
@@ -168,7 +168,7 @@
                             echo"<h5 class='card-title'>$nome</h5>";
                             echo"<p class='card-text'>R$" .$preco. "</p>";
                             echo"<p class='card-text'>$descricao</p>"; ?>
-                            <button class="comp btn w-100 comprar"><?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?> Comprar</a></button>
+                            <?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?><button class="comp btn w-100 comprar">Comprar</button></a>
                     </div>
                 </div>
             </div>
@@ -197,7 +197,7 @@
                                 echo"<h5 class='card-title'>$nome</h5>";
                                 echo"<p class='card-text'>R$" .$preco. "</p>";
                                 echo"<p class='card-text'>$descricao</p>"; ?>
-                                <button class="comp btn w-100 comprar"><?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?> Comprar</a></button>
+                                <?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?> <button class="comp btn w-100 comprar">Comprar</button></a>
                         </div>
                     </div>
                 </div>

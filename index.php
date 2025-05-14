@@ -73,7 +73,7 @@ $result_products->execute();
                             <h5 class='card-title'><?php echo $nome; ?></h5>
                             <p class='card-text'>R$ <?php echo $preco;?></p>
                             <p class='card-text'><?php echo $descricao; ?></p>
-                            <button class='comp btn w-100 comprar'><?php echo "<a href='../carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?> Comprar</a></button>
+                            <?php echo "<a href='carrinho/carrinho.php?id=$cod_item&acao=add' class='bt_comprar'>"?> <button class='comp btn w-100 comprar'>Comprar</button></a>
                         </div>
                  
                 </div>

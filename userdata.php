@@ -67,7 +67,7 @@ if (isset($_POST['logout'])) {
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header text-center bg-primary text-white">
+                <div class="card-header text-center bg-warning text-black">
                     Informações Pessoais
                 </div>
                 <div class="card-body">
@@ -88,7 +88,7 @@ if (isset($_POST['logout'])) {
     </div>
 
     <div class="text-center my-4">
-        <a href="../index.php" class="btn btn-primary">
+        <a href="./index.php" class="btn btn-warning">
             <i class="fas fa-arrow-left"></i> Voltar para o Início
         </a>
         <a href="login\hist.php" class="btn btn-secondary">
