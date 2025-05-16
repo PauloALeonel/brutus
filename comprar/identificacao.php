@@ -5,50 +5,44 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="imagex/png" href="../img/logo/logo.png">
-  <link rel="stylesheet" type="text/css" href="../cabecalho/pag_inicial.css" />
-  <link rel="stylesheet" type="text/css" href="../cabecalho/rodape.css" />
+  <link rel="stylesheet" type="text/css" href="../geral.css" />
   <link rel="stylesheet" type="text/css" href="identificacao.css" />
-  <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
-  <title>Iluminatta - Otica e Joalheria</title>
+  <title>Brutus - Comprar</title>
 </head>
 <body>
 <?php 
-    include_once "../cabecalho/index.php";
+session_start(); // abre a sessão
+
+    include_once "../cabecalho.html";
     include_once "conecta.php";
     if(!isset ($_SESSION['id_logado']) == true){ 
-        header ('location: ../login/index.php');
+        header ('location: ../login/login.php');
     } 
 
     else{
         $cliente= $_SESSION['id_logado'];
     
     
-    $query_dados="SELECT*FROM tb_cliente WHERE CODIGO=$cliente";
+    $query_dados="SELECT*FROM usuario WHERE CODIGO=$cliente";
     $dados = mysqli_query( $conn, $query_dados);
     $row_dados = mysqli_fetch_assoc($dados);
-    $query="SELECT*FROM tb_usuario WHERE COD_CLIENTE=$cliente";
-    $dado = mysqli_query( $conn, $query);
-    $row_dado = mysqli_fetch_assoc($dado);
 
-    $cpf=$row_dados['CPF'];
+
+    $cpf=$row_dados['cpf'];
 ?>
 
     <div class="fin_comp">
         <h2 class="titu">Finalizar Compra</h2>
         <div class="identificacao">
-            <p class="dado"><img src="../img/icone/perfil.png">Dados Pessoais<p>
+            <p class="dado"><img src="icone/perfil.png">Dados Pessoais<p>
             <form action="dad_pes.php" method="POST">
                 <div class="dados">
                     <label class="dados_label">Email</label></br>
-                    <input type="email" value="<?=$row_dado['LOGINUSU'] ?>" name="email" class="insere_dados" requided>
+                    <input type="email" value="<?=$row_dados['email'] ?>" name="email" class="insere_dados" requided>
                 </div>
                 <div class="dados">
                     <label class="dados_label">Nome</label></br>
-                    <input type="text" value="<?=$row_dados['NOME'] ?>" name="nome" class="insere_dados" requided>
-                </div>
-                <div class="dados">
-                    <label class="dados_label">Sobrenome</label></br>
-                    <input type="text" value="<?=$row_dados['SOBRENOME'] ?>" name="sobrenome" class="insere_dados" requided>
+                    <input type="text" value="<?=$row_dados['nome'] ?>" name="nome" class="insere_dados" requided>
                 </div>
                 <div class="dados">
                     <label class="dados_label">CPF</label></br>
@@ -61,11 +55,11 @@
         </div>
         <div class="etapas">
             <div class="entrega">
-                <p class="etap"><img src="../img/icone/entrega.png">Entrega<p>
+                <p class="etap"><img src="icone/entrega.png">Entrega<p>
                 <p>Aguardando confirmação dos dados</p>
             </div>
             <div class="pagamento">
-                <p class="etap"><img src="../img/icone/pagamento.png">Pagamento<p>
+                <p class="etap"><img src="icone/pagamento.png">Pagamento<p>
                 <p>Aguardando preenchimento dos dados</p>
             </div>
         </div>
@@ -75,10 +69,9 @@
                 $total_carrinho=0;
                 foreach ( $_SESSION['carrinho'] as $id => $qtd)
                 {
-                    $sql = "SELECT COD_PRODUTO, NOME, PRECO, CHAVE_IMG_PROD, CAMINHO_IMG 
-                    FROM tb_produto, tb_varias_img 
-                    WHERE COD_PRODUTO = '$id' AND COD_PRODUTO = CHAVE_IMG_PROD 
-                    GROUP BY COD_PRODUTO, NOME, PRECO, CHAVE_IMG_PROD";
+                    $sql = "SELECT cod_item, nome, preco, imagem
+                    FROM itens
+                    WHERE cod_item = '$id'";
                     $resultado = mysqli_query($conn,$sql) or die (mysqli_error());
                     $linha = mysqli_fetch_array($resultado);
                     
@@ -92,13 +85,14 @@
                     $valor= number_format($valor,2,",",".");
                     $total_carrinho += $subtota;
                     
+                    $caminhoImagem = "../produtos/" . $linha[3]; 
                    echo "<div class='produto'>
                             <div class='quantidade'>
                                 <p class='quant'> $qtd<p/>
                             </div>
-                            <div class='imagem'>
-                                <img src='.$linha[4]' class='imagem_prod'>
-                            </div>
+                            <div class='imagem'>";
+                             echo "<img src='$caminhoImagem' class='imagem_prod'>
+                           </div>
                             <div class='inf'>
                                 <div class='linha_1'>
                                     <p class='nome'>$linha[1]</p>
@@ -147,7 +141,7 @@
 
 <?php
     }
-    include_once "../cabecalho/rodape.html";
+    include_once "../rodape.html";
 ?>
 
 </body>

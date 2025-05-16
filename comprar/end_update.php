@@ -13,9 +13,9 @@
 
             $cep = str_replace("-" , "" , $cep );
 
-            $sqldados = "UPDATE tb_cliente
+            $sqldados = "UPDATE endereco
                           SET CEP='$cep', CIDADE='$cidade', BAIRRO='$bairro', RUA='$rua', NUMERO='$numero'
-                          WHERE CODIGO=$cliente";
+                          WHERE fk_Usuario_codigo=$cliente";
                         
             mysqli_query($conn, $sqldados)or die( mysqli_error($conn) );
         }

@@ -5,15 +5,15 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="imagex/png" href="../img/logo/logo.png">
-  <link rel="stylesheet" type="text/css" href="../cabecalho/pag_inicial.css" />
-  <link rel="stylesheet" type="text/css" href="../cabecalho/rodape.css" />
+  <link rel="stylesheet" type="text/css" href="../geral.css" />
   <link rel="stylesheet" type="text/css" href="endereco.css" />
-  <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
-  <title>Iluminatta - Otica e Joalheria</title>
+  <title>Brutus - Comprar</title>
 </head>
 <body>
 <?php 
-    include_once "../cabecalho/index.php";
+    session_start(); // abre a sessão
+
+    include_once "../cabecalho.html";
     include_once "conecta.php";
     if(!isset ($_SESSION['id_logado']) == true){ 
         header ('location: ../login/index.php');
@@ -22,11 +22,11 @@
     else{
         $cliente= $_SESSION['id_logado'];
     
-    $query_dados="SELECT*FROM tb_cliente WHERE CODIGO=$cliente";
+    $query_dados="SELECT*FROM endereco WHERE fk_Usuario_codigo=$cliente";
     $dados = mysqli_query( $conn, $query_dados);
     $row_dados = mysqli_fetch_assoc($dados);
 
-    $cep= $row_dados['CEP'];
+    $cep= $row_dados['cep'];
 
     function mask($val, $mask)
     {
@@ -53,7 +53,7 @@
     <div class="fin_comp">
         <h2 class="titu">Finalizar Compra</h2>
         <div class="endereco">
-            <p class="ende"><img src="../img/icone/entrega.png">Entrega<p>
+            <p class="ende"><img src="icone/entrega.png">Entrega<p>
             <form action="end_update.php" method="POST">
                 <div class="entrega">
                     <label class="end_label">CEP</label>
@@ -61,19 +61,19 @@
                 </div>
                 <div class="entrega">
                     <label class="end_label">Cidade</label>
-                    <input type="text" value="<?=$row_dados['CIDADE'] ?>" id="cidade" name="cidade" class="insere_dados" required>
+                    <input type="text" value="<?=$row_dados['cidade'] ?>" id="cidade" name="cidade" class="insere_dados" required>
                 </div>
                 <div class="entrega">
                     <label class="end_label">Bairro</label>
-                    <input type="text" value="<?=$row_dados['BAIRRO'] ?>" id="bairro" name="bairro" class="insere_dados" required>
+                    <input type="text" value="<?=$row_dados['bairro'] ?>" id="bairro" name="bairro" class="insere_dados" required>
                 </div>
                 <div class="entrega">
                     <label class="end_label">Rua</label>
-                    <input type="text" value="<?=$row_dados['RUA'] ?>" id="rua" name="rua" class="insere_dados" required>
+                    <input type="text" value="<?=$row_dados['rua'] ?>" id="rua" name="rua" class="insere_dados" required>
                 </div>
                 <div class="entrega">
                     <label class="end_label">Número</label>
-                    <input type="number" value="<?=$row_dados['NUMERO'] ?>" name="numero" class="insere_dados" required>
+                    <input type="number" value="<?=$row_dados['numero'] ?>" name="numero" class="insere_dados" required>
                 </div>
                 <div class="confirma">
                     <button type="submit" name="btn_end" class="salva_v">Ir para pagamento</button>
@@ -83,13 +83,13 @@
         <div class="etapas">
             <a href="identificacao.php" class="link"> 
                 <div class="identificacao">
-                    <p class="etap"><img src="../img/icone/perfil.png">Identificação<p>
+                    <p class="etap"><img src="/icone/perfil.png">Identificação<p>
                     <p class="dad_ver" >Dados confirmados</p>
-                    <img class="verificado" src="../img/icone/verificacao.png">
+                    <img class="verificado" src="icone/verificacao.png">
                 </div>
             </a>
             <div class="pagamento">
-                <p class="etap"><img src="../img/icone/pagamento.png">Pagamento<p>
+                <p class="etap"><img src="icone/pagamento.png">Pagamento<p>
                 <p>Aguardando preenchimento dos dados</p>
             </div>
         </div>
@@ -99,10 +99,9 @@
                 $total_carrinho=0;
                 foreach ( $_SESSION['carrinho'] as $id => $qtd)
                 {
-                    $sql = "SELECT COD_PRODUTO, NOME, PRECO, CHAVE_IMG_PROD, CAMINHO_IMG 
-                    FROM tb_produto, tb_varias_img 
-                    WHERE COD_PRODUTO = '$id' AND COD_PRODUTO = CHAVE_IMG_PROD 
-                    GROUP BY COD_PRODUTO, NOME, PRECO, CHAVE_IMG_PROD";
+                    $sql = "SELECT cod_item, nome, preco, imagem
+                    FROM itens
+                    WHERE cod_item = '$id'";
                     $resultado = mysqli_query($conn,$sql) or die (mysqli_error());
                     $linha = mysqli_fetch_array($resultado);
                     
@@ -115,13 +114,14 @@
                     $valor = substr_replace($preco, '.', -2, 0);
                     $valor= number_format($valor,2,",",".");
                     $total_carrinho += $subtota;
+                     $caminhoImagem = "../produtos/" . $linha[3]; 
                     
                    echo "<div class='produto'>
                             <div class='quantidade'>
                                 <p class='quant'> $qtd<p/>
                             </div>
-                            <div class='imagem'>
-                                <img src='.$linha[4]' class='imagem_prod'>
+                            <div class='imagem'>";
+                                 echo "<img src='$caminhoImagem' class='imagem_prod'>
                             </div>
                             <div class='inf'>
                                 <div class='linha_1'>
@@ -160,7 +160,7 @@
 
     <?php 
     }
-        include_once "../cabecalho/rodape.html";
+        include_once "../rodape.html";
     ?>
 </body>
 </html>

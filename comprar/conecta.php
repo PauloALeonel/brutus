@@ -1,6 +1,6 @@
 <?php
 	$servername = "localhost";
-	$database = "luminata";
+	$database = "brutus";
 	$username = "root";
 	$password = ""; 
 

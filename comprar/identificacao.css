@@ -1,7 +1,10 @@
+p{
+    color: white;
+}
 .fin_comp{
-    margin-top: 100px;
-    margin-bottom: 170px;
+    margin-top: 8px;
     width: 90%;
+    margin-bottom: 500px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -9,6 +12,7 @@
 .titu{
     font-size: 32px;
     font-weight: 200;
+    color: white;
 }
 
 .identificacao{
@@ -23,6 +27,7 @@
     margin-top: -3px;
     font-weight: bold;
     font-size: 22px;
+    color: white;
 }
 
 .dado img{
@@ -37,10 +42,11 @@
 
 .dados_label{
     font-size: 17px;
+    color: white;
 }
 
 .insere_dados{
-    border: 1px solid grey;
+    border: 1px solid rgb(253, 252, 252);
     width: 95%;
     height: 40px;
     font-size: 17px;
@@ -50,7 +56,7 @@
 
 .insere_dados:focus{
     outline: 0;
-    box-shadow: rgb(138, 138, 138) 1px 2px 5px ;
+    box-shadow: rgb(255, 255, 255) 1px 2px 5px ;
 }
 
 .confirma{
@@ -86,6 +92,7 @@
     margin-top: -3px;
     font-weight: bold;
     font-size: 22px;
+    color: white;
 }
 
 .etap img{
@@ -125,6 +132,7 @@
 
 .quant{
     font-size: 13px;
+    color: white;
 }
 
 .imagem_prod{
@@ -170,7 +178,7 @@
 }
 
 .voltar{
-    color: black;
+    color: rgb(255, 255, 255);
 }
 
 .vol{

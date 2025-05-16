@@ -1,74 +1,47 @@
 <?php
-
-include_once "conecta.php"; 
+include_once "conecta.php";
 session_start();
-$cliente= $_SESSION['id_logado'];
-    if ( isset($_POST["btn_pag"]) )
-    {
-        $cartao=$_POST['cartao'];
-        $parcelas=$_POST['parcela'];
-        $num_cartao=$_POST['cc'];
-        $nome=$_POST['nome'];
-        $validad=$_POST['valida'];
-        $cvv=$_POST['cvv'];
-        $cpf=$_POST['CPF'];
 
-        $validad = str_replace("-" , "" , $validad );
+$cliente = $_SESSION['id_logado'];
 
-        $num_cartao = str_replace(" " , "" , $num_cartao );
-        $cpf = str_replace("." , "" , $cpf );
-        $cpf = str_replace("-" , "" , $cpf );
-        $quant=0;
-        $total_carrinho=0;
-        foreach ( $_SESSION['carrinho'] as $id => $qtd)
-        {
-            $sql = "SELECT COD_PRODUTO, PRECO, ESTOQUE 
-                    FROM tb_produto
-                    WHERE COD_PRODUTO = '$id'";
-                    $resultado = mysqli_query($conn,$sql) or die (mysqli_error());
-                    $linha = mysqli_fetch_array($resultado);
-                    $preco = str_replace("," , "" , $linha[1] );
-                    $subtotal = $preco * $qtd;
-                    $total_carrinho += $subtotal;
+if (isset($_POST["btn_pag"])) {
+    $tipo_pag = $_POST['pagamento'];
+    $quant = 0;
+    $total_carrinho = 0;
+    $cod_status = 1; // Status inicial (ex: PREPARANDO)
 
-            $quant+=$qtd;
-            $est= $linha[2]-$qtd;
-            $sql_estoque = "UPDATE tb_produto
-                          SET ESTOQUE='$est' WHERE COD_PRODUTO = $id";
-                        
-            mysqli_query($conn, $sql_estoque)or die( mysqli_error($conn) );
-        }
-        
-        $sql_car= "INSERT INTO tb_carrinho
-        (QUANT_ITENS, COD_CLIENTE, PARCELAS, VALOR_TOTAL, STATU)
-       VALUES
-        ('$quant', '$cliente', '$parcelas', '$total_carrinho', 'SEPARANDO')";
-        mysqli_query($conn, $sql_car)or die( mysqli_error($conn) );
-        $COD = mysqli_insert_id($conn);
+    // Calcular total do carrinho
+    foreach ($_SESSION['carrinho'] as $id => $qtd) {
+        $sql = "SELECT preco FROM itens WHERE cod_item = '$id'";
+        $resultado = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+        $linha = mysqli_fetch_assoc($resultado);
 
-        foreach ( $_SESSION['carrinho'] as $id => $qtd)
-        {
-            $quant+=$qtd;
-            $sql_item = "INSERT INTO tb_item_carrinho
-        (CODIGO_CARRINHO, COD_ITEM, QUANT_ITEM)
-       VALUES
-        ('$COD', '$id', '$qtd')";
-        mysqli_query($conn, $sql_item)or die( mysqli_error($conn) );
-        
-        unset($_SESSION['carrinho'][$id]);  
-
-
-        }
-
-        $sql_cartao="INSERT INTO tb_cartao
-        (COD_CLIENTE, COD_CARRINHO, TIPO, NUMERO, NOME, VALIDADE, CVV, CPF)
-       VALUES
-        ('$cliente', '$COD', '$cartao', '$num_cartao', '$nome', '$validad', '$cvv', '$cpf')";
-        mysqli_query($conn, $sql_cartao)or die( mysqli_error($conn) );
-
-        header("Location: ../usu_comum/pedidos/pedidos.php");
-
-        
+        $preco = str_replace(",", "", $linha['preco']);
+        $subtotal = $preco * $qtd;
+        $total_carrinho += $subtotal;
+        $quant += $qtd;
     }
 
+    // Inserir pedido
+    $sql_pedido = "INSERT INTO pedidos 
+        (quant_itens, fk_Usuario_codigo, total_pedidos, cod_status_pedidos, tipo_pagamento)
+        VALUES ('$quant', '$cliente', '$total_carrinho', '$cod_status', '$tipo_pag')";
+    mysqli_query($conn, $sql_pedido) or die(mysqli_error($conn));
+
+    $COD = mysqli_insert_id($conn); // ID do pedido recém-criado
+
+    // Inserir itens no pedido
+    foreach ($_SESSION['carrinho'] as $id => $qtd) {
+        $sql_item = "INSERT INTO itens_pedido (cod_item, cod_pedido, quantidade)
+                     VALUES ('$id', '$COD', '$qtd')";
+        mysqli_query($conn, $sql_item) or die(mysqli_error($conn));
+
+        // Limpar carrinho
+        unset($_SESSION['carrinho'][$id]);
+    }
+
+    // Redirecionar
+    header("Location: ../usu_comum/pedidos/pedidos.php");
+    exit;
+}
 ?>
