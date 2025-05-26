@@ -200,15 +200,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_exclusao'])
         <li><a href="#" onclick="showSection('cadastro_pro')">Cadastro de Produto</a></li>
         <li><a href="#" onclick="showSection('produtos')">Produtos</a></li>
         <li><a href="relatorio.php">Relatorio Itens</a></li>
-        <a href="logout.php" class="btn btn-danger">
+        <a href="logout.php">
         <i class="fas fa-sign-out-alt"></i> Logout
         </a>
-<li>
-    <a href="logout.php" class="btn btn-danger">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </a>
-</li>
-
     <div id="cadastro_pro" class="section container">
         <h2>Cadastro de Produto</h2>
         <form method="POST" enctype="multipart/form-data" class="row g-3">
