@@ -156,7 +156,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_exclusao'])
         .section.active {
             display: block; 
         }
+     table {
+        width: 100%;
+        border-spacing: 0; /* permite arredondamento */
+        margin-top: 20px;
+        border-radius: 30px;
+        overflow: hidden;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
+    th, td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f4f4f4;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    select {
+        padding: 5px;
+        font-size: 16px;
+    }
     </style>
     <script>
         function showSection(sectionId) {
@@ -200,6 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_exclusao'])
         <li><a href="#" onclick="showSection('cadastro_pro')">Cadastro de Produto</a></li>
         <li><a href="#" onclick="showSection('produtos')">Produtos</a></li>
         <li><a href="relatorio.php">Relatorio Itens</a></li>
+        <li><a href="#" onclick="showSection('estado')">Rastreio</a></li>
         <a href="logout.php">
         <i class="fas fa-sign-out-alt"></i> Logout
         </a>
@@ -336,7 +368,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_exclusao'])
             </form>
         </div>
     <?php endwhile; ?>
+<!--RASTREIO-->
+    
+    <div id="estado" class="section container">
+    <?php
 
 
+$sql = "SELECT p.cod_pedido, p.datahora_pedido, p.total_pedidos, p.quant_itens, 
+               u.nome AS cliente, s.status_pedidos, s.cod_status_pedidos
+        FROM pedidos p
+        JOIN usuario u ON u.codigo = p.fk_Usuario_codigo
+        JOIN status_pedidos s ON s.cod_status_pedidos = p.cod_status_pedidos
+        ORDER BY p.cod_pedido DESC";
+
+$result = $conn->query($sql);
+?>
+
+<h2>Lista de Pedidos</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Data</th>
+            <th>Total</th>
+            <th>Itens</th>
+            <th>Status Atual</th>
+            <th>Alterar Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php while($row = $result->fetch_assoc()): ?>
+        <tr>
+            <form method="POST" action="alterar_estado.php">
+                <input type="hidden" name="cod_pedido" value="<?= $row['cod_pedido'] ?>">
+                <td><?= $row['cod_pedido'] ?></td>
+                <td><?= htmlspecialchars($row['cliente']) ?></td>
+                <td><?= $row['datahora_pedido'] ?></td>
+                <td>R$ <?= number_format($row['total_pedidos'], 2, ',', '.') ?></td>
+                <td><?= $row['quant_itens'] ?></td>
+                <td><?= $row['status_pedidos'] ?></td>
+                <td>
+                    <select name="novo_status">
+                        <?php
+                        $status_sql = "SELECT cod_status_pedidos, status_pedidos FROM status_pedidos";
+                        $status_result = $conn->query($status_sql);
+                        while ($status = $status_result->fetch_assoc()):
+                        ?>
+                            <option value="<?= $status['cod_status_pedidos'] ?>"
+                                <?= ($status['cod_status_pedidos'] == $row['cod_status_pedidos']) ? 'selected' : '' ?>>
+                                <?= $status['status_pedidos'] ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                    <button type="submit" class="btn-warning">Atualizar</button>
+                </td>
+            </form>
+        </tr>
+    <?php endwhile; ?>
+    </tbody>
+</table>
+    </div>
 </body>
 </html>
