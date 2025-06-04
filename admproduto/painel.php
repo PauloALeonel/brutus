@@ -1,4 +1,28 @@
-<?php
+01 – Introdução ao Java
+02 – Instalação Java e JDK
+03 – Instalação MySQL e JDBC
+04 – Apresentando a plataforma NetBeans
+05 – Criação do primeiro projeto “Olá, Mundo!”
+06 – Variáveis
+07 – Classe Scanner e classe Locale
+08 – Data e hora
+09 – Operadores aritméticos
+10 – Operadores lógicos
+11 – Estrutura de condição if-else
+12 – Operador ternário e encadeamento if-else-if
+13 – Estrutura condicional switch case
+14 – Laço de repetição while e do while
+15 – Laço de repetição for
+16 – Array, vetor e matriz
+17 – Listas
+18 – Estrutura forEach
+19 – Encapsulamento e métodos get set
+20 – Herança
+21 – Polimorfismo dinâmico
+22 – Polimorfismo estático
+23 - Abstração
+24 - Interface
+25 -<?php
 include_once "conexao.php";
 
 // CADASTRAR
@@ -409,24 +433,54 @@ $result = $conn->query($sql);
             </form>
         </div>
     <?php endwhile; ?>
-<!--RASTREIO-->
-    
-    <div id="estado" class="section container">
-    <?php
+<!-- RASTREIO -->
 
+<div id="estado" class="section container">
+<?php
 
-$sql = "SELECT p.cod_pedido, p.datahora_pedido, p.total_pedidos, p.quant_itens, 
-               u.nome AS cliente, s.status_pedidos, s.cod_status_pedidos
-        FROM pedidos p
-        JOIN usuario u ON u.codigo = p.fk_Usuario_codigo
-        JOIN status_pedidos s ON s.cod_status_pedidos = p.cod_status_pedidos
-        ORDER BY p.cod_pedido DESC";
+$sql = "SELECT 
+    p.cod_pedido, 
+    p.datahora_pedido, 
+    p.total_pedidos, 
+    p.quant_itens, 
+    u.nome AS cliente, 
+    sp.status_pedidos AS status_atual, 
+    hs.cod_status AS cod_status_pedidos
+FROM 
+    pedidos p
+JOIN 
+    usuario u ON u.codigo = p.fk_Usuario_codigo
+JOIN 
+    (
+        SELECT 
+            h1.cod_pedido, 
+            h1.cod_status
+        FROM 
+            hist_status_ped h1
+        INNER JOIN (
+            SELECT 
+                cod_pedido, 
+                MAX(data_hora) AS max_data
+            FROM 
+                hist_status_ped
+            GROUP BY 
+                cod_pedido
+        ) h2 
+        ON h1.cod_pedido = h2.cod_pedido AND h1.data_hora = h2.max_data
+    ) hs 
+    ON hs.cod_pedido = p.cod_pedido
+JOIN 
+    status_pedidos sp 
+    ON sp.cod_status_pedidos = hs.cod_status
+ORDER BY 
+    p.cod_pedido DESC;
+";
 
 $result = $conn->query($sql);
 ?>
 
 <h2>Lista de Pedidos</h2>
-<table>
+<table border="1">
     <thead>
         <tr>
             <th>ID</th>
@@ -441,15 +495,15 @@ $result = $conn->query($sql);
     <tbody>
     <?php while($row = $result->fetch_assoc()): ?>
         <tr>
-            <form method="POST" action="alterar_estado.php">
-                <input type="hidden" name="cod_pedido" value="<?= $row['cod_pedido'] ?>">
-                <td><?= $row['cod_pedido'] ?></td>
-                <td><?= htmlspecialchars($row['cliente']) ?></td>
-                <td><?= $row['datahora_pedido'] ?></td>
-                <td>R$ <?= number_format($row['total_pedidos'], 2, ',', '.') ?></td>
-                <td><?= $row['quant_itens'] ?></td>
-                <td><?= $row['status_pedidos'] ?></td>
-                <td>
+            <td><?= $row['cod_pedido'] ?></td>
+            <td><?= htmlspecialchars($row['cliente']) ?></td>
+            <td><?= $row['datahora_pedido'] ?></td>
+            <td>R$ <?= number_format($row['total_pedidos'], 2, ',', '.') ?></td>
+            <td><?= $row['quant_itens'] ?></td>
+            <td><?= $row['status_atual'] ?></td>
+            <td>
+                <form method="POST" action="alterar_estado.php">
+                    <input type="hidden" name="cod_pedido" value="<?= $row['cod_pedido'] ?>">
                     <select name="novo_status">
                         <?php
                         $status_sql = "SELECT cod_status_pedidos, status_pedidos FROM status_pedidos";
@@ -458,17 +512,16 @@ $result = $conn->query($sql);
                         ?>
                             <option value="<?= $status['cod_status_pedidos'] ?>"
                                 <?= ($status['cod_status_pedidos'] == $row['cod_status_pedidos']) ? 'selected' : '' ?>>
-                                <?= $status['status_pedidos'] ?>
+                                <?= htmlspecialchars($status['status_pedidos']) ?>
                             </option>
                         <?php endwhile; ?>
                     </select>
                     <button type="submit" class="btn-warning">Atualizar</button>
-                </td>
-            </form>
+                </form>
+            </td>
         </tr>
     <?php endwhile; ?>
     </tbody>
 </table>
-    </div>
-</body>
-</html>
+</div>
+
