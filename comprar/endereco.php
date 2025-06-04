@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="imagex/png" href="../img/logo/logo.png">
   <link rel="stylesheet" type="text/css" href="../geral.css" />
-  <link rel="stylesheet" type="text/css" href="endereco.css" />
+  <link rel="stylesheet" type="text/css" href="checkout_padronizado.css" />
   <title>Brutus - Comprar</title>
 </head>
 <body>
@@ -16,131 +16,233 @@
     include_once "../cabecalho.html";
     include_once "conecta.php";
     if(!isset ($_SESSION['id_logado']) == true){ 
-        header ('location: ../login/index.php');
+        header ('location: ../login/login.php');
+        exit;
     } 
 
-    else{
-        $cliente= $_SESSION['id_logado'];
+    // Inicializa variáveis para evitar erros
+    $cep = "";
+    $cidade = "";
+    $bairro = "";
+    $rua = "";
+    $numero = "";
+    $complemento = "";
+    $cliente = $_SESSION['id_logado'];
+    $modo = isset($_GET['modo']) ? $_GET['modo'] : 'selecionar';
+    $endereco_id = isset($_GET['endereco_id']) ? $_GET['endereco_id'] : 0;
     
-    $query_dados="SELECT*FROM endereco WHERE fk_Usuario_codigo=$cliente";
-    $dados = mysqli_query( $conn, $query_dados);
-    $row_dados = mysqli_fetch_assoc($dados);
-
-    $cep= $row_dados['cep'];
+    // Busca todos os endereços do cliente
+    $query_enderecos = "SELECT * FROM endereco WHERE fk_Usuario_codigo = $cliente ORDER BY principal DESC";
+    $enderecos = mysqli_query($conn, $query_enderecos);
+    $tem_enderecos = mysqli_num_rows($enderecos) > 0;
+    
+    // Se estiver editando um endereço específico
+    if ($modo == 'editar' && $endereco_id > 0) {
+        $query_endereco = "SELECT * FROM endereco WHERE cod_endereco = $endereco_id AND fk_Usuario_codigo = $cliente";
+        $resultado = mysqli_query($conn, $query_endereco);
+        
+        if (mysqli_num_rows($resultado) > 0) {
+            $endereco = mysqli_fetch_assoc($resultado);
+            $cep = $endereco['cep'];
+            $cidade = $endereco['cidade'];
+            $bairro = $endereco['bairro'];
+            $rua = $endereco['rua'];
+            $numero = $endereco['numero'];
+            $complemento = isset($endereco['complemento']) ? $endereco['complemento'] : '';
+        }
+    }
 
     function mask($val, $mask)
     {
-    $maskared = '';
-    $k = 0;
-    for($i = 0; $i<=strlen($mask)-1; $i++)
-    {
-    if($mask[$i] == '#')
-    {
-        if(isset($val[$k]))
-        $maskared .= $val[$k++];
-    }
-    else
-    {
-        if(isset($mask[$i]))
-        $maskared .= $mask[$i];
+        if(empty($val)) return '';
+        
+        $maskared = '';
+        $k = 0;
+        for($i = 0; $i<=strlen($mask)-1; $i++)
+        {
+            if($mask[$i] == '#')
+            {
+                if(isset($val[$k]))
+                    $maskared .= $val[$k++];
+            }
+            else
+            {
+                if(isset($mask[$i]))
+                    $maskared .= $mask[$i];
+            }
         }
+        return $maskared;
     }
-    return $maskared;
-    }
-
 ?>
 
     <div class="fin_comp">
         <h2 class="titu">Finalizar Compra</h2>
+        
         <div class="endereco">
             <p class="ende"><img src="icone/entrega.png">Entrega<p>
-            <form action="end_update.php" method="POST">
-                <div class="entrega">
-                    <label class="end_label">CEP</label>
-                    <input type="text" value="<?=$cep ?>" name="CEP" id="CEP" class="insere_dados" required>
+            
+            <?php if ($modo == 'selecionar' && $tem_enderecos): ?>
+                <!-- Modo de seleção de endereço existente -->
+                <div class="endereco-lista">
+                    <h3>Selecione um endereço de entrega</h3>
+                    
+                    <?php while ($endereco = mysqli_fetch_assoc($enderecos)): ?>
+                        <div class="endereco-item <?php echo $endereco['principal'] ? 'selecionado' : ''; ?>" 
+                             onclick="selecionarEndereco(this, <?php echo $endereco['cod_endereco']; ?>)">
+                            <div class="endereco-item-titulo">
+                                <?php echo htmlspecialchars($endereco['rua']); ?>, <?php echo htmlspecialchars($endereco['numero']); ?>
+                                <?php if ($endereco['principal']): ?>
+                                    <span class="endereco-principal">Principal</span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="endereco-item-detalhes">
+                                <?php echo htmlspecialchars($endereco['bairro']); ?>, <?php echo htmlspecialchars($endereco['cidade']); ?>
+                                <br>CEP: <?php echo htmlspecialchars($endereco['cep']); ?>
+                                <?php if (!empty($endereco['complemento'])): ?>
+                                    <br>Complemento: <?php echo htmlspecialchars($endereco['complemento']); ?>
+                                <?php endif; ?>
+                            </div>
+                            <div class="endereco-item-acoes" style="margin-top: 10px;">
+                                <a href="endereco.php?modo=editar&endereco_id=<?php echo $endereco['cod_endereco']; ?>" class="link" style="display: inline-block; margin-right: 15px;">Editar</a>
+                                <?php if (!$endereco['principal']): ?>
+                                    <a href="definir_endereco_principal.php?id=<?php echo $endereco['cod_endereco']; ?>" class="link" style="display: inline-block;">Definir como principal</a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
                 </div>
-                <div class="entrega">
-                    <label class="end_label">Cidade</label>
-                    <input type="text" value="<?=$row_dados['cidade'] ?>" id="cidade" name="cidade" class="insere_dados" required>
-                </div>
-                <div class="entrega">
-                    <label class="end_label">Bairro</label>
-                    <input type="text" value="<?=$row_dados['bairro'] ?>" id="bairro" name="bairro" class="insere_dados" required>
-                </div>
-                <div class="entrega">
-                    <label class="end_label">Rua</label>
-                    <input type="text" value="<?=$row_dados['rua'] ?>" id="rua" name="rua" class="insere_dados" required>
-                </div>
-                <div class="entrega">
-                    <label class="end_label">Número</label>
-                    <input type="number" value="<?=$row_dados['numero'] ?>" name="numero" class="insere_dados" required>
-                </div>
+                
                 <div class="confirma">
-                    <button type="submit" name="btn_end" class="salva_v">Ir para pagamento</button>
+                    <form action="end_update.php" method="POST">
+                        <input type="hidden" name="endereco_id" id="endereco_selecionado" value="">
+                        <button type="submit" name="btn_usar_endereco" class="salva_v">Usar este endereço</button>
+                    </form>
+                    <a href="endereco.php?modo=novo" class="btn-novo-endereco btn-secundario">Cadastrar novo endereço</a>
                 </div>
-            </form>
+                
+            <?php else: ?>
+                <!-- Modo de cadastro/edição de endereço -->
+                <form action="end_update.php" method="POST" class="endereco-form ativo">
+                    <div class="entrega">
+                        <label class="end_label">CEP</label>
+                        <input type="text" value="<?php echo htmlspecialchars($cep); ?>" name="CEP" id="CEP" class="insere_dados" required>
+                    </div>
+                    <div class="entrega">
+                        <label class="end_label">Cidade</label>
+                        <input type="text" value="<?php echo htmlspecialchars($cidade); ?>" id="cidade" name="cidade" class="insere_dados" required>
+                    </div>
+                    <div class="entrega">
+                        <label class="end_label">Bairro</label>
+                        <input type="text" value="<?php echo htmlspecialchars($bairro); ?>" id="bairro" name="bairro" class="insere_dados" required>
+                    </div>
+                    <div class="entrega">
+                        <label class="end_label">Rua</label>
+                        <input type="text" value="<?php echo htmlspecialchars($rua); ?>" id="rua" name="rua" class="insere_dados" required>
+                    </div>
+                    <div class="entrega">
+                        <label class="end_label">Número</label>
+                        <input type="number" value="<?php echo htmlspecialchars($numero); ?>" name="numero" class="insere_dados" required>
+                    </div>
+                    <div class="entrega">
+                        <label class="end_label">Complemento (opcional)</label>
+                        <input type="text" value="<?php echo htmlspecialchars($complemento); ?>" name="complemento" class="insere_dados">
+                    </div>
+                    <div class="entrega">
+                        <label class="end_label">
+                            <input type="checkbox" name="endereco_principal" value="1" <?php echo ($modo == 'novo' || (isset($endereco) && $endereco['principal'])) ? 'checked' : ''; ?>>
+                            Definir como endereço principal
+                        </label>
+                    </div>
+                    
+                    <div class="confirma">
+                        <?php if ($modo == 'editar'): ?>
+                            <input type="hidden" name="endereco_id" value="<?php echo $endereco_id; ?>">
+                            <button type="submit" name="btn_atualizar_endereco" class="salva_v">Atualizar endereço</button>
+                        <?php else: ?>
+                            <button type="submit" name="btn_novo_endereco" class="salva_v">Salvar endereço</button>
+                        <?php endif; ?>
+                        
+                        <?php if ($tem_enderecos): ?>
+                            <a href="endereco.php?modo=selecionar" class="btn-novo-endereco btn-secundario">Voltar para meus endereços</a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            <?php endif; ?>
         </div>
+        
         <div class="etapas">
             <a href="identificacao.php" class="link"> 
-                <div class="identificacao">
-                    <p class="etap"><img src="/icone/perfil.png">Identificação<p>
-                    <p class="dad_ver" >Dados confirmados</p>
+                <div class="identificacao etapa-concluida">
+                    <p class="etap"><img src="icone/perfil.png">Identificação<p>
+                    <p class="dad_ver">Dados confirmados</p>
                     <img class="verificado" src="icone/verificacao.png">
                 </div>
             </a>
-            <div class="pagamento">
+            <div class="entrega etapa-ativa">
+                <p class="etap"><img src="icone/entrega.png">Entrega<p>
+                <p>Selecione ou cadastre um endereço</p>
+            </div>
+            <div class="pagamento etapa-pendente">
                 <p class="etap"><img src="icone/pagamento.png">Pagamento<p>
                 <p>Aguardando preenchimento dos dados</p>
             </div>
         </div>
+        
         <div class="pedido">
             <p class="resum">Resumo do pedido<p>
             <?php
-                $total_carrinho=0;
-                foreach ( $_SESSION['carrinho'] as $id => $qtd)
-                {
-                    $sql = "SELECT cod_item, nome, preco, imagem
-                    FROM itens
-                    WHERE cod_item = '$id'";
-                    $resultado = mysqli_query($conn,$sql) or die (mysqli_error());
-                    $linha = mysqli_fetch_array($resultado);
-                    
-                    //0 id, 1 nome, 2 preco e 3 imagem
-                    $nome = $linha[1];
-                    $preco = str_replace("," , "" , $linha[2] );
-                    $subtotal = $preco * $qtd;
-                    $subtota= substr_replace($subtotal, '.', -2, 0);
-                    $subtotal= number_format($subtota,2,",",".");
-                    $valor = substr_replace($preco, '.', -2, 0);
-                    $valor= number_format($valor,2,",",".");
-                    $total_carrinho += $subtota;
-                     $caminhoImagem = "../produtos/" . $linha[3]; 
-                    
-                   echo "<div class='produto'>
-                            <div class='quantidade'>
-                                <p class='quant'> $qtd<p/>
-                            </div>
-                            <div class='imagem'>";
-                                 echo "<img src='$caminhoImagem' class='imagem_prod'>
-                            </div>
-                            <div class='inf'>
-                                <div class='linha_1'>
-                                    <p class='nome'>$linha[1]</p>
-                                </div>
-                                <div class= 'linha_2'> 
-                                    <p class='valor'>R$ $valor</p>
-                                    <p class='subtotal'>Total: R$ $subtotal</p>";?>
-                                </div>
-                            </div>
-                        </div>	</br>
-                          <?php			 
-                }		
-            ?></br>
+                $total_carrinho = 0;
+                
+                // Verifica se o carrinho existe e não está vazio
+                if(isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
+                    foreach ($_SESSION['carrinho'] as $id => $qtd)
+                    {
+                        $sql = "SELECT cod_item, nome, preco, imagem
+                        FROM itens
+                        WHERE cod_item = '$id'";
+                        $resultado = mysqli_query($conn, $sql) or die (mysqli_error($conn));
+                        
+                        if(mysqli_num_rows($resultado) > 0) {
+                            $linha = mysqli_fetch_array($resultado);
+                            
+                            //0 id, 1 nome, 2 preco e 3 imagem
+                            $nome = $linha[1];
+                            $preco = str_replace("," , "" , $linha[2] );
+                            $subtota = $preco * $qtd;
+                            $subtotal =  number_format($subtota, 2, ',', '.');
+                            $valor = number_format($preco, 2, ',', '.');
+                            $total_carrinho += $subtota;
+                            
+                            $caminhoImagem = "../produtos/" . $linha[3]; 
+                            
+                            echo "<div class='produto'>
+                                    <div class='quantidade'>
+                                        <p class='quant'> $qtd<p/>
+                                    </div>
+                                    <div class='imagem'>";
+                                    echo "<img src='$caminhoImagem' class='imagem_prod'>
+                                    </div>
+                                    <div class='inf'>
+                                        <div class='linha_1'>
+                                            <p class='nome'>$nome</p>
+                                        </div>
+                                        <div class='linha_2'> 
+                                            <p class='valor'>R$ $valor</p>
+                                            <p class='subtotal'>Total: R$ $subtotal</p>
+                                        </div>
+                                    </div>
+                                </div>";
+                        }
+                    }
+                } else {
+                    echo "<p>Seu carrinho está vazio.</p>";
+                }
+            ?>
             <hr class="linha">
             <div class="preco">
                 <div class="sub">
                     <p class="subt">Subtotal</p>
-                    <p class="subtot">R$ <?=$total_carrinho = number_format($total_carrinho,2,",",".") ?></p>
+                    <p class="subtot">R$ <?php echo number_format($total_carrinho, 2, ',', '.'); ?></p>
                 </div>
                 <div class="ent">
                     <p class="entr">Entrega</p>
@@ -148,7 +250,7 @@
                 </div>
                 <div class="tot">
                     <p class="tota">Total</p>
-                    <p class="total">R$<?=$total_carrinho?></p>
+                    <p class="total">R$ <?php echo number_format($total_carrinho, 2, ",", "."); ?></p>
                 </div>
                 <div class="vol">
                     <a class="voltar" href="../carrinho/carrinho.php">Voltar a sacola</a>
@@ -157,23 +259,81 @@
         </div> 
     </div>  
 
-
-    <?php 
-    }
-        include_once "../rodape.html";
-    ?>
+<?php 
+    include_once "../rodape.html";
+?>
 </body>
 </html>
 
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function(){
-  var $CEP = $("#CEP");
-	$("#CEP").mask("99999-999");
+    var $CEP = $("#CEP");
+    $("#CEP").mask("99999-999");
+    
+    // Função para buscar endereço pelo CEP
+    function limpa_formulário_cep() {
+        // Limpa valores do formulário de cep.
+        $("#rua").val("");
+        $("#bairro").val("");
+        $("#cidade").val("");
+    }
+    
+    //Quando o campo cep perde o foco.
+    $("#CEP").blur(function() {
+        //Nova variável "cep" somente com dígitos.
+        var cep = $(this).val().replace(/\D/g, '');
+        
+        //Verifica se campo cep possui valor informado.
+        if (cep != "") {
+            //Expressão regular para validar o CEP.
+            var validacep = /^[0-9]{8}$/;
+            
+            //Valida o formato do CEP.
+            if(validacep.test(cep)) {
+                //Preenche os campos com "..." enquanto consulta webservice.
+                $("#rua").val("...");
+                $("#bairro").val("...");
+                $("#cidade").val("...");
+                
+                //Consulta o webservice viacep.com.br/
+                $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+                    if (!("erro" in dados)) {
+                        //Atualiza os campos com os valores da consulta.
+                        $("#rua").val(dados.logradouro);
+                        $("#bairro").val(dados.bairro);
+                        $("#cidade").val(dados.localidade);
+                    } else {
+                        //CEP pesquisado não foi encontrado.
+                        limpa_formulário_cep();
+                        alert("CEP não encontrado.");
+                    }
+                });
+            } else {
+                //cep é inválido.
+                limpa_formulário_cep();
+                alert("Formato de CEP inválido.");
+            }
+        } else {
+            //cep sem valor, limpa formulário.
+            limpa_formulário_cep();
+        }
+    });
 });
-</script>
 
-<script type="text/javascript" src="cep.js"></script>
+// Função para selecionar um endereço
+function selecionarEndereco(elemento, id) {
+    // Remove a classe selecionado de todos os itens
+    document.querySelectorAll('.endereco-item').forEach(function(item) {
+        item.classList.remove('selecionado');
+    });
+    
+    // Adiciona a classe selecionado ao item clicado
+    elemento.classList.add('selecionado');
+    
+    // Atualiza o valor do input hidden
+    document.getElementById('endereco_selecionado').value = id;
+}
+</script>

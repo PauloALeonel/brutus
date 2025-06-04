@@ -13,7 +13,7 @@ if ($_SESSION['tipos_usuario'] == 1) {
     header('Location: ../admproduto/painel.php');
 } else {
     // Cliente
-    header('Location: ../userdata.php');
+    header('Location: ../usuario/perfil.php');
 }
 exit;
 ?>

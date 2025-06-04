@@ -31,7 +31,7 @@ if ($qtdREGISTRO > 0) {
     $c = $linha["fk_tipos_usuario_codigo"];
     $_SESSION['id_logado'] = $linha['codigo'];
     if($c == 2){
-        header('Location: ../userdata.php'); // Redireciona para a página inicial
+        header('Location: ../usuario/perfil.php'); // Redireciona para a página inicial
     } elseif($c == 1){
         header('Location: ../admproduto/painel.php'); // Redireciona para a página inicial
     }

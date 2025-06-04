@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="imagex/png" href="../img/logo/logo.png">
   <link rel="stylesheet" type="text/css" href="../geral.css" />
-  <link rel="stylesheet" type="text/css" href="pagamento.css" />
+  <link rel="stylesheet" type="text/css" href="checkout_padronizado.css" />
   <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
   <title>Brutus - Comprar</title>
 </head>
@@ -22,6 +22,28 @@ session_start(); // abre a sessão
 
     else{
         $cliente= $_SESSION['id_logado'];
+        
+        // Verificar se o endereço de entrega foi selecionado
+        if(!isset($_SESSION['endereco_entrega']) || empty($_SESSION['endereco_entrega'])) {
+            // Se não tiver endereço selecionado, redireciona para a página de endereço
+            $_SESSION['erro'] = "Por favor, selecione um endereço de entrega antes de prosseguir para o pagamento.";
+            header('location: endereco.php?modo=selecionar');
+            exit;
+        }
+        
+        // Buscar informações do endereço selecionado
+        $endereco_id = $_SESSION['endereco_entrega'];
+        $query_endereco = "SELECT * FROM endereco WHERE cod_endereco = $endereco_id AND fk_Usuario_codigo = $cliente";
+        $resultado_endereco = mysqli_query($conn, $query_endereco);
+        
+        if(mysqli_num_rows($resultado_endereco) == 0) {
+            // Se o endereço não for encontrado, redireciona para a página de endereço
+            $_SESSION['erro'] = "Endereço não encontrado. Por favor, selecione um endereço válido.";
+            header('location: endereco.php?modo=selecionar');
+            exit;
+        }
+        
+        $endereco = mysqli_fetch_assoc($resultado_endereco);
     
 ?>
     <div class="fin_comp">
@@ -41,11 +63,9 @@ session_start(); // abre a sessão
                     //0 id, 1 nome, 2 preco e 3 imagem
                     $nome = $linha[1];
                     $preco = str_replace("," , "" , $linha[2] );
-                    $subtotal = $preco * $qtd;
-                    $subtota= substr_replace($subtotal, '.', -2, 0);
-                    $subtotal= number_format($subtota,2,",",".");
-                    $valor = substr_replace($preco, '.', -2, 0);
-                    $valor= number_format($valor,2,",",".");
+                    $subtota = $preco * $qtd;
+                    $subtotal =  number_format($subtota, 2, ',', '.');
+                    $valor = number_format($preco, 2, ',', '.');
                     $total_carrinho += $subtota;
                     $caminhoImagem = "../produtos/" . $linha[3]; 
 
@@ -65,10 +85,10 @@ session_start(); // abre a sessão
                                     <p class='subtotal'>Total: R$ $subtotal</p>";?>
                                 </div>
                             </div>
-                        </div>	</br>
+                        </div>
                           <?php			 
                 }		
-            ?></br>
+            ?>
             <hr class="linha">
             <div class="preco">
                 <div class="sub">
@@ -107,6 +127,20 @@ session_start(); // abre a sessão
 <div class="pagamento-card">
     <p class="titulo">Pagamento</p>
 
+    <!-- Exibir informações do endereço de entrega -->
+    <div class="endereco-resumo">
+        <p class="subtitulo">Endereço de entrega:</p>
+        <div class="endereco-detalhe">
+            <p><?php echo $endereco['rua']; ?>, <?php echo $endereco['numero']; ?></p>
+            <p><?php echo $endereco['bairro']; ?>, <?php echo $endereco['cidade']; ?></p>
+            <p>CEP: <?php echo $endereco['cep']; ?></p>
+            <?php if(!empty($endereco['complemento'])): ?>
+                <p>Complemento: <?php echo $endereco['complemento']; ?></p>
+            <?php endif; ?>
+            <p><a href="endereco.php?modo=selecionar" class="link">Alterar endereço</a></p>
+        </div>
+    </div>
+
     <form action="pag_compra.php" method="POST">
         <div class="tipo_pagamento">
             <p class="subtitulo">Selecione o tipo de pagamento:</p>
@@ -129,6 +163,9 @@ session_start(); // abre a sessão
 
         <p class="info_entrega">O pagamento será realizado no momento da entrega.</p>
 
+        <!-- Campo oculto para passar o ID do endereço -->
+        <input type="hidden" name="endereco_id" value="<?php echo $endereco_id; ?>">
+
         <div class="confirma">
             <button type="submit" name="btn_pag" class="btn-finalizar">Finalizar compra</button>
         </div>
@@ -137,14 +174,14 @@ session_start(); // abre a sessão
 
         <div class="etapas">
             <a href="identificacao.php" class="link">
-                <div class="identificacao">
+                <div class="identificacao etapa-concluida">
                     <p class="etap"><img src="img/icone/perfil.png">Identificação<p>
                     <p class="dad_ver" >Dados confirmados</p>
                     <img class="verificado" src="icone/verificacao.png">
                 </div>
             </a>
             <a href="endereco.php" class="link">
-                <div class="pagamento">
+                <div class="pagamento etapa-concluida">
                     <p class="etap"><img src="icone/entrega.png">Endereco<p>
                     <p class="dad_ver" >Dados confirmados</p>
                     <img class="verificado" src="icone/verificacao.png">

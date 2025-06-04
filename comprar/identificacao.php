@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="imagex/png" href="../img/logo/logo.png">
   <link rel="stylesheet" type="text/css" href="../geral.css" />
-  <link rel="stylesheet" type="text/css" href="identificacao.css" />
+  <link rel="stylesheet" type="text/css" href="checkout_padronizado.css" />
   <title>Brutus - Comprar</title>
 </head>
 <body>
@@ -79,10 +79,9 @@ session_start(); // abre a sessão
                     $nome = $linha[1];
                     $preco = str_replace("," , "" , $linha[2] );
                     $subtotal = $preco * $qtd;
-                    $subtota= substr_replace($subtotal, '.', -2, 0);
-                    $subtotal= number_format($subtota,2,",",".");
-                    $valor = substr_replace($preco, '.', -2, 0);
-                    $valor= number_format($valor,2,",",".");
+                    $subtota= $subtotal;
+                    $subtotal= number_format($subtotal,2,",",".");
+                    $valor= number_format($preco,2,",",".");
                     $total_carrinho += $subtota;
                     
                     $caminhoImagem = "../produtos/" . $linha[3]; 
@@ -102,10 +101,10 @@ session_start(); // abre a sessão
                                     <p class='subtotal'>Total: R$ $subtotal</p>";?>
                                 </div>
                             </div>
-                        </div>	</br>
+                        </div>
                           <?php			 
                 }		
-            ?></br>
+            ?>
             <hr class="linha">
             <div class="preco">
                 <div class="sub">
@@ -126,7 +125,7 @@ session_start(); // abre a sessão
             </div>
         </div>
 
-    </div  >  
+    </div>  
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

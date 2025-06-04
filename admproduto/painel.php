@@ -7,7 +7,14 @@ if (isset($_POST["btn_cadastrar"])) {
     $preco = $_POST['preco'];
     $descricao = $_POST['descricao'];
     $categoria = $_POST['categoria'];
+    $erros = [];
 
+    // Validações básicas
+    if (empty($nome)) $erros[] = "Nome do produto é obrigatório";
+    if (!is_numeric($preco) || $preco <= 0) $erros[] = "Preço inválido";
+    // Adicione outras validações conforme necessário
+
+    // Processamento da imagem
     if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == UPLOAD_ERR_OK) {
         $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
         $extensao = strtolower(pathinfo($_FILES['imagem']['name'], PATHINFO_EXTENSION));
@@ -15,35 +22,58 @@ if (isset($_POST["btn_cadastrar"])) {
         $nomeImagem = uniqid() . '.' . $extensao;
 
         if (!is_dir($diretorio)) {
-            mkdir($diretorio, 0777, true);
+            if (!mkdir($diretorio, 0777, true)) {
+                $erros[] = "Falha ao criar diretório para imagens";
+            }
         }
 
         if (in_array($extensao, $extensoesPermitidas)) {
-            if (move_uploaded_file($_FILES['imagem']['tmp_name'], $diretorio . $nomeImagem)) {
-                $caminhoimagem = $nomeImagem;
+            if (!move_uploaded_file($_FILES['imagem']['tmp_name'], $diretorio . $nomeImagem)) {
+                $erros[] = "Erro ao mover o arquivo para o diretório de destino";
             } else {
-                die("<div class='alert alert-danger text-center'>Erro ao mover o arquivo para o diretório de destino.</div>");
+                $caminhoimagem = $nomeImagem;
             }
         } else {
-            die("<div class='alert alert-danger text-center'>Formato de imagem não permitido. Use JPG, JPEG, PNG ou GIF.</div>");
+            $erros[] = "Formato de imagem não permitido. Use JPG, JPEG, PNG ou GIF";
         }
     } else {
-        die("<div class='alert alert-danger text-center'>Erro no envio da imagem.</div>");
+        $erros[] = "Erro no envio da imagem ou imagem não selecionada";
     }
 
-    $sqlProduto = $conn->prepare("INSERT INTO itens (nome, preco, descricao, imagem, fk_Categoria_cod_categoria) VALUES (?, ?, ?, ?, ?)");
-    if (!$sqlProduto) {
-        die("Erro ao preparar a consulta: " . $conn->error);
+    // Se não houver erros, procede com o cadastro
+    if (empty($erros)) {
+        $sqlProduto = $conn->prepare("INSERT INTO itens (nome, preco, descricao, imagem, fk_Categoria_cod_categoria) VALUES (?, ?, ?, ?, ?)");
+        
+        if ($sqlProduto) {
+            $sqlProduto->bind_param('sdsss', $nome, $preco, $descricao, $caminhoimagem, $categoria);
+            
+            if ($sqlProduto->execute()) {
+                echo "<div class='alert alert-success text-center'>Produto cadastrado com sucesso!</div>";
+                // Limpar os campos do formulário ou redirecionar
+                $nome = $preco = $descricao = '';
+            } else {
+                $erros[] = "Erro ao cadastrar o produto: " . $sqlProduto->error;
+            }
+            
+            $sqlProduto->close();
+        } else {
+            $erros[] = "Erro ao preparar a consulta: " . $conn->error;
+        }
     }
-
-    $sqlProduto->bind_param('sdsss', $nome, $preco, $descricao, $caminhoimagem, $categoria);
+    
+    // Exibir erros se houver
+    if (!empty($erros)) {
+        foreach ($erros as $erro) {
+            echo "<div class='alert alert-danger text-center'>$erro</div>";
+        }
+    }
 }
 
 // EDITAR
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_editar"])) {
     $id_item = $_POST["id_item"];
     $nome = mysqli_real_escape_string($conn, $_POST["nome"]);
-    $preco = mysqli_real_escape_string($conn, $_POST["preco"]);
+    $preco = mysqli_real_escape_string($conn, str_replace(',', '.', $_POST['preco']) );
     $descricao = mysqli_real_escape_string($conn, $_POST["descricao"]);
     $categoria = $_POST["categoria"];
     $pedido = isset($_POST["pedido"]) ? $_POST["pedido"] : null;
@@ -229,17 +259,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_exclusao'])
                 <input type="file" name="imagem" class="form-control" accept="image/*" onchange="previewImagem()" required>
                 <img id="imgPreview" class="img-preview" src="">
             </div>
-            <div class="col-md-6">
-                <label class="form-label">Categoria</label>
-                <select name="categoria" class="form-select">
-                    <option value="1">Hamburguer</option>
-                    <option value="2">Kids</option>
-                    <option value="3">Combos</option>
-                    <option value="4">Acompanhamentos</option>
-                    <option value="5">Bebidas</option>
-                    <option value="">Sobremesa</option>
-                </select>
-            </div>
+   <?php         
+// Buscar categorias
+$sql = "SELECT cod_categoria, nome FROM categoria";
+$result = $conn->query($sql);
+?>
+
+<div class="col-md-6">
+    <label class="form-label">Categoria</label>
+    <select name="categoria" class="form-select">
+        <option value="">Selecione...</option>
+        <?php
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                echo '<option value="' . $row['cod_categoria'] . '">' . htmlspecialchars($row['nome']) . '</option>';
+            }
+        } else {
+            echo '<option value="">Nenhuma categoria encontrada</option>';
+        }
+        ?>
+    </select>
+</div>
+
             <div class="col-12">
                 <button type="submit" name="btn_cadastrar" class="btn btn-warning btn-sm">Cadastrar Produto</button>
             </div>

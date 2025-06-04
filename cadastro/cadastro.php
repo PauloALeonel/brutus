@@ -1,35 +1,63 @@
 <?php
-	$servername = "localhost";
-	$database = "brutus";
-	$username = "root";
-	$password = ""; 
+// Inicie a sessão no início do script
+session_start();
 
-	$conn = new mysqli($servername,$username,$password,$database);
-   
-    if ( isset($_POST["btnCadastrar"]) ){
-        $nome=$_POST['nome'];
-        $email=$_POST['email'];
-        $cpf=$_POST['cpf'];
-        $telefone=$_POST['telefone'];
-        $senha=$_POST['senha'];
+$servername = "localhost";
+$database = "brutus";
+$username = "root";
+$password = ""; 
 
+$conn = new mysqli($servername, $username, $password, $database);
 
-        $result = mysqli_query($conn, "INSERT INTO usuario (nome, email, cpf, telefone, senha, fk_tipos_usuario_codigo )
-		VALUES ('$nome', '$email', '$cpf', '$telefone', md5($senha), '2') ") ;
+// Verifique a conexão
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-        $bairro=$_POST['bairro'];
-        $rua=$_POST['rua'];
-        $numero=$_POST['numero'];
-        $cep=$_POST['cep'];
-        $complemento=$_POST['complemento'];
-        $ult = mysqli_insert_id($conn);
+if (isset($_POST["btnCadastrar"])) {
+    // Coletar dados do formulário
+    $nome = $_POST['nome'];
+    $email = $_POST['email'];
+    $cpf = $_POST['cpf'];
+    $telefone = $_POST['telefone'];
+    $senha = md5($_POST['senha']); // Criar o hash MD5 antes da query
     
-        $result = mysqli_query($conn, "INSERT INTO endereco (cep, rua, bairro, numero, complemento, cidade, fk_Usuario_codigo )
-		VALUES ('$cep', '$rua', '$bairro', '$numero', '$complemento', 'Ourinhos', '$ult') ") ;
-
-        $codigo = mysqli_insert_id($conn);
-        $_SESSION['id_logado'] = $codigo;
-        header('Location: /brutus/index.php'); // Redireciona para a página inicial
+    $bairro = $_POST['bairro'];
+    $rua = $_POST['rua'];
+    $numero = $_POST['numero'];
+    $cep = $_POST['cep'];
+    $complemento = $_POST['complemento'];
+    
+    // Usar prepared statements para evitar SQL injection
+    // Inserir usuário
+    $stmt = $conn->prepare("INSERT INTO usuario (nome, email, cpf, telefone, senha, fk_tipos_usuario_codigo) 
+                           VALUES (?, ?, ?, ?, ?, '2')");
+    $stmt->bind_param("sssss", $nome, $email, $cpf, $telefone, $senha);
+    
+    if ($stmt->execute()) {
+        $id_usuario = $stmt->insert_id;
+        $stmt->close();
+        
+        // Inserir endereço
+        $stmt2 = $conn->prepare("INSERT INTO endereco (cep, rua, bairro, numero, complemento, cidade, fk_Usuario_codigo) 
+                                VALUES (?, ?, ?, ?, ?, 'Ourinhos', ?)");
+        $stmt2->bind_param("sssssi", $cep, $rua, $bairro, $numero, $complemento, $id_usuario);
+        
+        if ($stmt2->execute()) {
+            // Salvar o ID do usuário na sessão (não do endereço)
+            $_SESSION['id_logado'] = $id_usuario;
+            
+            // Redirecionar
+            header('Location: /brutus/index.php');
+            exit(); // Importante para garantir que o script pare aqui
+        } else {
+            echo "Erro ao cadastrar endereço: " . $stmt2->error;
+        }
+        $stmt2->close();
+    } else {
+        echo "Erro ao cadastrar usuário: " . $stmt->error;
     }
+}
 
+$conn->close();
 ?>
