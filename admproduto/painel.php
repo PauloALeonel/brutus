@@ -1,28 +1,4 @@
-01 – Introdução ao Java
-02 – Instalação Java e JDK
-03 – Instalação MySQL e JDBC
-04 – Apresentando a plataforma NetBeans
-05 – Criação do primeiro projeto “Olá, Mundo!”
-06 – Variáveis
-07 – Classe Scanner e classe Locale
-08 – Data e hora
-09 – Operadores aritméticos
-10 – Operadores lógicos
-11 – Estrutura de condição if-else
-12 – Operador ternário e encadeamento if-else-if
-13 – Estrutura condicional switch case
-14 – Laço de repetição while e do while
-15 – Laço de repetição for
-16 – Array, vetor e matriz
-17 – Listas
-18 – Estrutura forEach
-19 – Encapsulamento e métodos get set
-20 – Herança
-21 – Polimorfismo dinâmico
-22 – Polimorfismo estático
-23 - Abstração
-24 - Interface
-25 -<?php
+<?php
 include_once "conexao.php";
 
 // CADASTRAR
@@ -504,18 +480,18 @@ $result = $conn->query($sql);
             <td>
                 <form method="POST" action="alterar_estado.php">
                     <input type="hidden" name="cod_pedido" value="<?= $row['cod_pedido'] ?>">
-                    <select name="novo_status">
-                        <?php
-                        $status_sql = "SELECT cod_status_pedidos, status_pedidos FROM status_pedidos";
-                        $status_result = $conn->query($status_sql);
-                        while ($status = $status_result->fetch_assoc()):
-                        ?>
-                            <option value="<?= $status['cod_status_pedidos'] ?>"
-                                <?= ($status['cod_status_pedidos'] == $row['cod_status_pedidos']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($status['status_pedidos']) ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
+                    <select name="cod_status">
+    <?php
+    $status_sql = "SELECT cod_status_pedidos, status_pedidos FROM status_pedidos";
+    $status_result = $conn->query($status_sql);
+    while ($status = $status_result->fetch_assoc()):
+    ?>
+        <option value="<?= $status['cod_status_pedidos'] ?>"
+            <?= ($status['cod_status_pedidos'] == $row['cod_status_pedidos']) ? 'selected' : '' ?>>
+            <?= htmlspecialchars($status['status_pedidos']) ?>
+        </option>
+    <?php endwhile; ?>
+</select>
                     <button type="submit" class="btn-warning">Atualizar</button>
                 </form>
             </td>

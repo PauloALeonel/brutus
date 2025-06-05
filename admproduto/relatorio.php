@@ -20,8 +20,10 @@ if ($cat_result->num_rows > 0) {
     }
 }
 
-// Verifica se foi selecionada uma categoria
+// Recebe filtros
 $filtro_categoria = isset($_GET['categoria']) ? intval($_GET['categoria']) : 0;
+$data_inicial = isset($_GET['data_inicial']) ? $_GET['data_inicial'] : '';
+$data_final = isset($_GET['data_final']) ? $_GET['data_final'] : '';
 
 // Monta a consulta SQL
 $sql = "SELECT 
@@ -31,20 +33,41 @@ $sql = "SELECT
         FROM 
             itens_pedido AS ip
         JOIN 
-            itens AS i ON ip.cod_item = i.cod_item ";
+            itens AS i ON ip.cod_item = i.cod_item
+        JOIN
+            pedidos AS p ON ip.codigo_pedido = p.cod_pedido
+        ";
 
+
+$condicoes = [];
+
+// Filtro por categoria
 if ($filtro_categoria > 0) {
-    $sql .= "WHERE i.fk_Categoria_cod_categoria = $filtro_categoria ";
+    $condicoes[] = "i.fk_Categoria_cod_categoria = $filtro_categoria";
 }
 
-$sql .= "GROUP BY i.nome, i.preco
-         ORDER BY total_vendido DESC";
+// Filtro por data
+if (!empty($data_inicial) && !empty($data_final)) {
+    $condicoes[] = "DATE(p.datahora_pedido) BETWEEN '$data_inicial' AND '$data_final'";
+} elseif (!empty($data_inicial)) {
+    $condicoes[] = "DATE(p.datahora_pedido) >= '$data_inicial'";
+} elseif (!empty($data_final)) {
+    $condicoes[] = "DATE(p.datahora_pedido) <= '$data_final'";
+}
+
+// Aplica WHERE se houver condições
+if (count($condicoes) > 0) {
+    $sql .= " WHERE " . implode(' AND ', $condicoes);
+}
+
+$sql .= " GROUP BY i.nome, i.preco
+          ORDER BY total_vendido DESC";
 
 $result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>Relatório de Produtos Mais Vendidos</title>
@@ -53,11 +76,9 @@ $result = $conn->query($sql);
             font-family: Arial, sans-serif;
             background: white;
             margin: 20px;
-            line-height: 1.6;
         }
 
-        h1, h2 {
-            font-weight: normal;
+        h2 {
             color: rgb(211, 108, 35);
             text-align: center;
         }
@@ -67,29 +88,34 @@ $result = $conn->query($sql);
             margin-bottom: 20px;
         }
 
-        select, input[type="submit"] {
+        select, input[type="submit"], input[type="date"], form button {
             padding: 8px 12px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            margin-left: 5px;
+            margin: 5px;
+            background-color: white;
+            color: rgb(211, 108, 35);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        input[type="submit"]:hover, form button:hover {
+            background-color: rgb(211, 108, 35);
+            color: white;
         }
 
         table {
             width: 90%;
             margin: 0 auto;
             background: white;
-            border-collapse: separate;
-            border-spacing: 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+            border-collapse: collapse;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
         }
 
         th, td {
             padding: 12px;
             text-align: center;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #ddd;
         }
 
         th {
@@ -97,11 +123,7 @@ $result = $conn->query($sql);
             color: white;
         }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        button {
+        button#print {
             display: block;
             margin: 20px auto;
             padding: 10px 20px;
@@ -112,7 +134,7 @@ $result = $conn->query($sql);
             cursor: pointer;
         }
 
-        button:hover {
+        button#print:hover {
             background-color: saddlebrown;
         }
     </style>
@@ -121,18 +143,29 @@ $result = $conn->query($sql);
 
 <h2>Relatório de Produtos Mais Vendidos</h2>
 
-<!-- Formulário de filtro -->
+<!-- Formulário de filtros -->
 <form method="GET">
-    <label for="categoria">Filtrar por Categoria:</label>
+    <label for="categoria">Categoria:</label>
     <select name="categoria" id="categoria">
         <option value="0">Todas</option>
-        <?php foreach ($categorias as $cat): ?>
+        <?php foreach($categorias as $cat): ?>
             <option value="<?= $cat['cod_categoria'] ?>" <?= ($cat['cod_categoria'] == $filtro_categoria) ? 'selected' : '' ?>>
                 <?= htmlspecialchars($cat['nome']) ?>
             </option>
         <?php endforeach; ?>
     </select>
+
+    <label>De:</label>
+    <input type="date" name="data_inicial" value="<?= htmlspecialchars($data_inicial) ?>">
+    <label>Até:</label>
+    <input type="date" name="data_final" value="<?= htmlspecialchars($data_final) ?>">
+
     <input type="submit" value="Filtrar">
+
+    <button type="button" onclick="window.location.href='painel.php'">
+    Volta admin
+    </button>
+
 </form>
 
 <!-- Tabela de resultados -->
@@ -145,32 +178,31 @@ $result = $conn->query($sql);
     </tr>
 
     <?php
-    $cor = "white";
-    if ($result && $result instanceof mysqli_result) {
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $preco_unitario = floatval($row['preco_unitario']);
-                $total_vendido = intval($row['total_vendido']);
-                $valor_total = number_format($preco_unitario * $total_vendido, 2, ',', '.');
-                $preco_formatado = number_format($preco_unitario, 2, ',', '.');
+    if ($result->num_rows > 0) {
+        mysqli_data_seek($result, 0);
+        while($row = $result->fetch_assoc()) {
+            $preco_unitario = floatval($row['preco_unitario']);
+            $total_vendido = intval($row['total_vendido']);
+            $valor_total = number_format($preco_unitario * $total_vendido, 2, ',', '.');
+            $preco_formatado = number_format($preco_unitario, 2, ',', '.');
 
-            echo "<tr bgcolor='$cor'>
+            echo "<tr>
                     <td>{$row['nome_produto']}</td>
                     <td>{$total_vendido}</td>
                     <td>R$ {$preco_formatado}</td>
                     <td>R$ {$valor_total}</td>
                   </tr>";
-
-            $cor = ($cor == "white") ? "navajowhite" : "white";
         }
     } else {
         echo "<tr><td colspan='4'>Nenhum registro encontrado.</td></tr>";
-    } }
+    }
     ?>
 </table>
 
-<button onclick="window.print()">Imprimir / Salvar em PDF</button>
+<br>
+<button id="print" onclick="window.print()">Imprimir / Salvar em PDF</button>
 
+<!-- Gráfico -->
 <canvas id="grafico" width="800" height="400"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -182,8 +214,8 @@ $result = $conn->query($sql);
             labels: [
                 <?php
                 mysqli_data_seek($result, 0);
-                while ($row = $result->fetch_assoc()) {
-                    echo "'" . addslashes($row['nome_produto']) . "',";
+                while($row = $result->fetch_assoc()) {
+                    echo "'{$row['nome_produto']}',";
                 }
                 ?>
             ],
@@ -192,13 +224,13 @@ $result = $conn->query($sql);
                 data: [
                     <?php
                     mysqli_data_seek($result, 0);
-                    while ($row = $result->fetch_assoc()) {
+                    while($row = $result->fetch_assoc()) {
                         echo "{$row['total_vendido']},";
                     }
                     ?>
                 ],
-                backgroundColor: 'rgba(211, 108, 35)',
-                borderColor: 'rgba(211, 108, 35)',
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1
             }]
         },
@@ -219,3 +251,8 @@ $result = $conn->query($sql);
 <?php
 $conn->close();
 ?>
+
+
+
+
+

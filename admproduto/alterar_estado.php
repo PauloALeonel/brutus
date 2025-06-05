@@ -1,21 +1,21 @@
 <?php
-include 'conexao.php';
+include('conexao.php'); // certifique-se de que a conexão está correta
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $cod_pedido = intval($_POST['cod_pedido']);
-    $novo_status = intval($_POST['novo_status']);
+if (isset($_POST['cod_pedido']) && isset($_POST['cod_status'])) {
+    $cod_pedido = $_POST['cod_pedido'];
+    $cod_status = $_POST['cod_status'];
+    $data_hora = date('Y-m-d H:i:s');
 
-    $sql = "UPDATE pedidos SET cod_status_pedidos = ? WHERE cod_pedido = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $novo_status, $cod_pedido);
+    $sql = "INSERT INTO hist_status_ped (cod_pedido, cod_status, data_hora) 
+            VALUES ('$cod_pedido', '$cod_status', '$data_hora')";
 
-    if ($stmt->execute()) {
-        header("Location: painel.php");
+    if (mysqli_query($conn, $sql)) {
+        header("Location: painel.php?status=ok");
         exit();
     } else {
-        echo "Erro ao atualizar status: " . $conn->error;
+        echo "Erro ao atualizar status: " . mysqli_error($conn);
     }
 } else {
-    echo "Requisição inválida.";
+    echo "Dados incompletos.";
 }
 ?>
