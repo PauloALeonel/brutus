@@ -1,13 +1,10 @@
 <?php
 session_start();
 
+include_once "conexao.php";
+
 $mensagem_sucesso = '';
 $erros = [];
-
-$host = "localhost"; 
-$database = "brutus"; 
-$username = "root"; 
-$password = ""; 
 
 try {
     $conn = new PDO("mysql:host=$host;dbname=" . $database, $username, $password);
