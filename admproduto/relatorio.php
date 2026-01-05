@@ -1,16 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "brutus";
+session_start();
 
-// Conexão com o banco
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Falha na conexão: " . $conn->connect_error);
-}
+include_once "conexao.php";
 
-// Carrega categorias para o select
 $categorias = [];
 $cat_sql = "SELECT cod_categoria, nome FROM categoria";
 $cat_result = $conn->query($cat_sql);
@@ -20,12 +12,10 @@ if ($cat_result->num_rows > 0) {
     }
 }
 
-// Recebe filtros
 $filtro_categoria = isset($_GET['categoria']) ? intval($_GET['categoria']) : 0;
 $data_inicial = isset($_GET['data_inicial']) ? $_GET['data_inicial'] : '';
 $data_final = isset($_GET['data_final']) ? $_GET['data_final'] : '';
 
-// Monta a consulta SQL
 $sql = "SELECT 
             i.nome AS nome_produto,
             REPLACE(i.preco, ',', '.') AS preco_unitario,
@@ -38,15 +28,11 @@ $sql = "SELECT
             pedidos AS p ON ip.codigo_pedido = p.cod_pedido
         ";
 
-
 $condicoes = [];
 
-// Filtro por categoria
 if ($filtro_categoria > 0) {
     $condicoes[] = "i.fk_Categoria_cod_categoria = $filtro_categoria";
 }
-
-// Filtro por data
 if (!empty($data_inicial) && !empty($data_final)) {
     $condicoes[] = "DATE(p.datahora_pedido) BETWEEN '$data_inicial' AND '$data_final'";
 } elseif (!empty($data_inicial)) {
@@ -55,11 +41,9 @@ if (!empty($data_inicial) && !empty($data_final)) {
     $condicoes[] = "DATE(p.datahora_pedido) <= '$data_final'";
 }
 
-// Aplica WHERE se houver condições
 if (count($condicoes) > 0) {
     $sql .= " WHERE " . implode(' AND ', $condicoes);
 }
-
 $sql .= " GROUP BY i.nome, i.preco
           ORDER BY total_vendido DESC";
 
@@ -140,10 +124,8 @@ $result = $conn->query($sql);
     </style>
 </head>
 <body>
-
 <h2>Relatório de Produtos Mais Vendidos</h2>
 
-<!-- Formulário de filtros -->
 <form method="GET">
     <label for="categoria">Categoria:</label>
     <select name="categoria" id="categoria">
@@ -168,7 +150,6 @@ $result = $conn->query($sql);
 
 </form>
 
-<!-- Tabela de resultados -->
 <table>
     <tr>
         <th>Produto</th>
@@ -202,7 +183,6 @@ $result = $conn->query($sql);
 <br>
 <button id="print" onclick="window.print()">Imprimir / Salvar em PDF</button>
 
-<!-- Gráfico -->
 <canvas id="grafico" width="800" height="400"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -244,15 +224,5 @@ $result = $conn->query($sql);
         }
     });
 </script>
-
 </body>
 </html>
-
-<?php
-$conn->close();
-?>
-
-
-
-
-
