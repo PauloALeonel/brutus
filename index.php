@@ -1,10 +1,7 @@
 <?php 
+session_start();
 
-$host = "localhost"; 
-$database = "brutus"; 
-$username = "root"; 
-$password = ""; 
-$conn = new PDO("mysql:host=$host;dbname=" . $database, $username, $password); 
+include_once "userdata.php";
 
 $query_products = "SELECT cod_item, nome, descricao, preco, imagem FROM itens WHERE fk_Categoria_cod_categoria = 2"; 
 $result_products = $conn->prepare($query_products); 
@@ -26,8 +23,6 @@ $result_products->execute();
 <body>
 
 <?php include_once "cabecalho.html"; ?>
-    <!-- Carousel -->
-
         <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
@@ -40,9 +35,6 @@ $result_products->execute();
                 <a href="/brutus/cardapio.php#kids">
                     <img src="img\bannerkids.svg" class="d-block w-100" alt="..."> </a>
                 </div>
-                <!--<div class="carousel-item">
-                    <img src="img\banner3.svg" class="d-block w-100" alt="...">
-                </div> -->
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -81,9 +73,6 @@ $result_products->execute();
             <?php } ?>
         </div>
     </div>
-
-      <!--#include file='rodape.html'-->
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <?php include_once "rodape.html"; ?>
 </body>
