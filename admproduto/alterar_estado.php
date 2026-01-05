@@ -1,5 +1,5 @@
 <?php
-include('conexao.php'); // certifique-se de que a conexão está correta
+include "conexao.php";
 
 if (isset($_POST['cod_pedido']) && isset($_POST['cod_status'])) {
     $cod_pedido = $_POST['cod_pedido'];
