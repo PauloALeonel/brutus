@@ -1,31 +1,20 @@
 <?php
 session_start();
-
-// Inicializa variáveis para evitar erros
+include_once "conexao.php";
 $erros = [];
 
-// Conexão com o banco de dados
-$host = "localhost"; 
-$database = "brutus"; 
-$username = "root"; 
-$password = ""; 
 
 try {
-    // Usando PDO para conexão com o banco de dados
     $conn = new PDO("mysql:host=$host;dbname=" . $database, $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Verifica se o usuário está logado
     if (!isset($_SESSION['id_logado']) || empty($_SESSION['id_logado'])) {
-        // Redireciona para a página de login se não estiver logado
         header("Location: login.php");
         exit;
     }
     
-    // Obtém o ID do usuário logado
     $usuario_id = $_SESSION['id_logado'];
     
-    // Verifica se o ID do pedido foi passado
     if (!isset($_GET['id']) || empty($_GET['id'])) {
         $_SESSION['erro'] = "ID do pedido não informado.";
         header("Location: perfil.php#historico-pedidos");
@@ -34,8 +23,6 @@ try {
     
     $pedido_id = intval($_GET['id']);
     
-    // Busca os dados do pedido
-    // CORREÇÃO: Alterado p.cod_status_pedidos para p.fk_status_pedidos
     $query_pedido = "SELECT p.*, 
        (SELECT s.status_pedidos 
         FROM hist_status_ped h
@@ -55,21 +42,17 @@ WHERE p.cod_pedido = :pedido_id AND p.fk_Usuario_codigo = :usuario_id";
     $stmt_pedido->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
     $stmt_pedido->execute();
     
-    // Verifica se encontrou o pedido
     if ($stmt_pedido->rowCount() == 0) {
         $_SESSION['erro'] = "Pedido não encontrado ou não pertence ao usuário.";
         header("Location: perfil.php#historico-pedidos");
         exit;
     }
     
-    // Obtém os dados do pedido
     $pedido = $stmt_pedido->fetch(PDO::FETCH_ASSOC);
     
-    // Formata a data e hora
     $data_pedido = date('d/m/Y', strtotime($pedido['datahora_pedido']));
     $hora_pedido = date('H:i', strtotime($pedido['datahora_pedido']));
     
-    // Busca o endereço de entrega
     $query_endereco = "SELECT e.*
                       FROM endereco e
                       INNER JOIN pedidos p ON e.cod_endereco = p.cod_endereco
@@ -79,15 +62,12 @@ WHERE p.cod_pedido = :pedido_id AND p.fk_Usuario_codigo = :usuario_id";
     $stmt_endereco->bindParam(':pedido_id', $pedido_id, PDO::PARAM_INT);
     $stmt_endereco->execute();
     
-    // Inicializa variável de endereço
     $endereco = null;
     
-    // Se encontrou o endereço
     if ($stmt_endereco->rowCount() > 0) {
         $endereco = $stmt_endereco->fetch(PDO::FETCH_ASSOC);
     }
     
-    // Busca os itens do pedido
     $query_itens = "SELECT ip.*, i.nome, i.descricao, i.preco, i.imagem, ip.quantidade
                    FROM itens_pedido ip 
                    INNER JOIN itens i ON ip.cod_item = i.cod_item
@@ -98,15 +78,12 @@ WHERE p.cod_pedido = :pedido_id AND p.fk_Usuario_codigo = :usuario_id";
     $stmt_itens->bindParam(':pedido_id', $pedido_id, PDO::PARAM_INT);
     $stmt_itens->execute();
     
-    // Inicializa array de itens
     $itens = [];
     
-    // Se encontrou itens
     if ($stmt_itens->rowCount() > 0) {
         $itens = $stmt_itens->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    // Busca o histórico de status do pedido
     $query_historico = "SELECT h.*, s.status_pedidos
                        FROM hist_status_ped h
                        INNER JOIN status_pedidos s ON h.cod_status = s.cod_status_pedidos
@@ -117,10 +94,8 @@ WHERE p.cod_pedido = :pedido_id AND p.fk_Usuario_codigo = :usuario_id";
     $stmt_historico->bindParam(':pedido_id', $pedido_id, PDO::PARAM_INT);
     $stmt_historico->execute();
     
-    // Inicializa array de histórico
     $historico = [];
     
-    // Se encontrou histórico
     if ($stmt_historico->rowCount() > 0) {
         $historico = $stmt_historico->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -202,7 +177,6 @@ WHERE p.cod_pedido = :pedido_id AND p.fk_Usuario_codigo = :usuario_id";
 
 <div class="container my-3">
     <div class="row">
-        <!-- Menu Lateral -->
         <div class="col-md-3">
             <div class="list-group profile-menu">
                 <a href="perfil.php#editar-dados" class="list-group-item list-group-item-action"><i class="fas fa-user-edit me-2"></i>Editar Dados</a>
@@ -213,7 +187,6 @@ WHERE p.cod_pedido = :pedido_id AND p.fk_Usuario_codigo = :usuario_id";
             </div>
         </div>
 
-        <!-- Conteúdo do Pedido -->
         <div class="col-md-9">
             <?php if (!empty($erros)): ?>
                 <div class="alert alert-danger alert-dismissible fade show">
@@ -411,7 +384,6 @@ WHERE p.cod_pedido = :pedido_id AND p.fk_Usuario_codigo = :usuario_id";
     </div>
 </div>
 
-<!-- Modal de Confirmação Excluir Conta -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
