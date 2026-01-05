@@ -13,7 +13,6 @@
 <body>
 
 <?php include_once "../cabecalho.html"; ?>
-    <!-- Carousel -->
     <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
@@ -45,16 +44,14 @@
     <p>
     No Burguer Brutus, acreditamos que um hambúrguer é muito mais do que uma refeição rápida – é uma experiência!</br>      Somos apaixonados por criar hambúrgueres artesanais com ingredientes de qualidade, combinações únicas e aquele sabor irresistível que faz você querer voltar sempre.
 
-Nosso foco é proporcionar a melhor experiência de hambúrguer delivery, entregando suculência e frescor direto na sua porta. Cada detalhe importa, desde o pão macio e fresquinho até os molhos exclusivos feitos com muito cuidado.
-
-Seja para um almoço rápido, um jantar especial ou um encontro com amigos, o Burguer Brutus está aqui para tornar cada momento mais delicioso. Experimente e descubra por que somos conhecidos como os brutos do sabor!</br>
-
-🍔 Burguer Brutus – Mais sabor, mais intensidade, mais você!
+    Nosso foco é proporcionar a melhor experiência de hambúrguer delivery, entregando suculência e frescor direto na sua porta. Cada detalhe importa, desde o pão macio e fresquinho até os molhos exclusivos feitos com muito cuidado.
+    
+    Seja para um almoço rápido, um jantar especial ou um encontro com amigos, o Burguer Brutus está aqui para tornar cada momento mais delicioso. Experimente e descubra por que somos conhecidos como os brutos do sabor!</br>
+    
+    🍔 Burguer Brutus – Mais sabor, mais intensidade, mais você!
     </p>
 </div>
       
-      <!--#include file='rodape.html'-->
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <?php include_once "../rodape.html"; ?>
 </body>
