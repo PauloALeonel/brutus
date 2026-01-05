@@ -3,7 +3,7 @@ body {
     background-color: black !important;
 }
 
-.navbar { /* cabecalho */
+.navbar {
     background-color: black ;
     width: 100%;
     height: 100px;
@@ -12,15 +12,15 @@ body {
     justify-content: center;
 }
 
-.navbar-brand { /*rodapé*/
+.navbar-brand { 
     font-size: 24px;
     font-weight: bold;
-    color: black !important; /*cor letra link */
+    color: black !important;
     display: flex;
     align-items: center;
 }
 
-.logo { /*titulos das páginas*/
+.logo { 
     justify-content: center;
     font-size: 40px;
     color: black ; 
@@ -29,21 +29,21 @@ body {
 }
 
 .logo0 img {
-    margin-top: -20px; /* Ajuste o valor para subir a logo */
+    margin-top: -20px; 
 }
 
 .login {
-    color: #f9f9f9; /* usando apenas na tela de login, textos, google, facebook*/
+    color: #f9f9f9; 
 }
 
-.navbar-nav { /* centraliza cabecalho*/
+.navbar-nav { 
     display: flex;
     flex-grow: 1;
     justify-content: center;
     align-items: center;
 }
 
-.nav-item { /*links do cabecalho*/
+.nav-item { 
     text-align: center;
 }
 
@@ -55,26 +55,26 @@ body {
     transition: color 0.3s ease, transform 0.3s ease;
 }
 
-.nav-link:hover { /*efeito links cabecalho*/
+.nav-link:hover { 
     color: #ef890d !important ;
     transform: scale(1.1);
 }
 
-.navbar-icons { /* icone de carrinho e login*/
+.navbar-icons { 
     display: flex;
     align-items: center;
     margin-left: auto;
     padding-right: 20px;
 }
 
-.navbar-icons a { /* icone de carrinho e login*/
+.navbar-icons a { 
     color: #fff2cc ;
     margin-left: 20px;
     font-size: 1.5rem;
     transition: color 0.3s ease;
 }
 
-.navbar-icons a:hover {/* icone de carrinho e login ao passar por cima*/
+.navbar-icons a:hover {
     color: #ef890d ;
 }
 
