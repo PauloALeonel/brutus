@@ -1,36 +1,28 @@
 <?php
 session_start();
 
-// Inicializa variáveis para evitar erros
 $mensagem_sucesso = '';
 $erros = [];
 
-// Conexão com o banco de dados
 $host = "localhost"; 
 $database = "brutus"; 
 $username = "root"; 
 $password = ""; 
 
 try {
-    // Usando PDO para conexão com o banco de dados
     $conn = new PDO("mysql:host=$host;dbname=" . $database, $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Verifica se o usuário está logado
     if (!isset($_SESSION['id_logado']) || empty($_SESSION['id_logado'])) {
-        // Redireciona para a página de login se não estiver logado
         header("Location: login.php");
         exit;
     }
     
-    // Obtém o ID do usuário logado
     $usuario_id = $_SESSION['id_logado'];
     
-    // Verifica se é uma edição (ID do endereço foi passado)
     $endereco_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     $modo_edicao = ($endereco_id > 0);
     
-    // Inicializa variáveis do formulário
     $identificacao = "";
     $cep = "";
     $rua = "";
@@ -43,7 +35,6 @@ try {
     $telefone_contato = "";
     $principal = 0;
     
-    // Se for modo de edição, busca os dados do endereço
     if ($modo_edicao) {
         $query = "SELECT * FROM endereco WHERE cod_endereco = :id AND fk_Usuario_codigo  = :usuario_id";
         $stmt = $conn->prepare($query);
@@ -54,7 +45,6 @@ try {
         if ($stmt->rowCount() > 0) {
             $endereco = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            // Preenche as variáveis com os dados do endereço
             $identificacao = $endereco['identificacao'];
             $cep = $endereco['cep'];
             $rua = $endereco['rua'];
@@ -62,15 +52,12 @@ try {
             $complemento = $endereco['complemento'];
             $bairro = $endereco['bairro'];
         } else {
-            // Endereço não encontrado ou não pertence ao usuário
             $erros[] = "Endereço não encontrado.";
             $modo_edicao = false;
         }
     }
     
-    // Processamento do formulário quando enviado (POST)
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Captura os dados do formulário
         $identificacao = isset($_POST['identificacao']) ? trim($_POST['identificacao']) : '';
         $cep = isset($_POST['cep']) ? trim($_POST['cep']) : '';
         $rua = isset($_POST['rua']) ? trim($_POST['rua']) : '';
@@ -83,7 +70,6 @@ try {
         $telefone_contato = isset($_POST['telefone_contato']) ? trim($_POST['telefone_contato']) : '';
         $principal = isset($_POST['principal']) ? 1 : 0;
         
-        // Validação básica
         if (empty($identificacao)) {
             $erros[] = "A identificação do endereço é obrigatória.";
         }
@@ -104,12 +90,9 @@ try {
             $erros[] = "O bairro é obrigatório.";
         }
         
-        // Se não houver erros, salva os dados
         if (empty($erros)) {
             try {
-                // Verifica se é uma edição ou um novo cadastro
                 if ($modo_edicao) {
-                    // Atualiza o endereço existente
                     $query_update = "UPDATE endereco SET 
                         identificacao = :identificacao,
                         cep = :cep,
@@ -122,7 +105,6 @@ try {
                     $stmt_update = $conn->prepare($query_update);
                     $stmt_update->bindParam(':id', $endereco_id, PDO::PARAM_INT);
                 } else {
-                    // Insere um novo endereço
                     $query_update = "INSERT INTO endereco (
                         fk_Usuario_codigo,
                         identificacao,
@@ -144,7 +126,6 @@ try {
                     $stmt_update = $conn->prepare($query_update);
                 }
                 
-                // Parâmetros comuns para INSERT e UPDATE
                 $stmt_update->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
                 $stmt_update->bindParam(':identificacao', $identificacao);
                 $stmt_update->bindParam(':cep', $cep);
@@ -156,7 +137,6 @@ try {
                 if ($stmt_update->execute()) {
                     $mensagem_sucesso = $modo_edicao ? "Endereço atualizado com sucesso!" : "Endereço cadastrado com sucesso!";
                     
-                    // Redireciona para a página de perfil após salvar
                     header("Location: perfil.php#meus-enderecos");
                     exit;
                 } else {
@@ -189,7 +169,6 @@ try {
 
 <div class="container my-3">
     <div class="row">
-        <!-- Menu Lateral -->
         <div class="col-md-3">
             <div class="list-group profile-menu">
                 <a href="perfil.php#editar-dados" class="list-group-item list-group-item-action"><i class="fas fa-user-edit me-2"></i>Editar Dados</a>
@@ -200,7 +179,6 @@ try {
             </div>
         </div>
 
-        <!-- Conteúdo do Formulário de Endereço -->
         <div class="col-md-9">
             <div class="address-form-container">
                 <h2 class="mb-4 profile-title">
@@ -273,7 +251,6 @@ try {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Script para buscar endereço pelo CEP usando a API ViaCEP
     document.getElementById('cep').addEventListener('blur', function() {
         const cep = this.value.replace(/\D/g, '');
         
@@ -289,14 +266,12 @@ try {
                     document.getElementById('bairro').value = data.bairro;
                     document.getElementById('cidade').value = data.localidade;
                     document.getElementById('estado').value = data.uf;
-                    // Foca no campo número após preencher os dados
                     document.getElementById('numero').focus();
                 }
             })
             .catch(error => console.error('Erro ao buscar CEP:', error));
     });
     
-    // Formatação do CEP
     document.getElementById('cep').addEventListener('input', function() {
         let cep = this.value.replace(/\D/g, '');
         cep = cep.slice(0, 8);
@@ -308,7 +283,6 @@ try {
         this.value = cep;
     });
     
-    // Formatação do telefone
     document.getElementById('telefone_contato').addEventListener('input', function() {
         let telefone = this.value.replace(/\D/g, '');
         telefone = telefone.slice(0, 11);
@@ -324,12 +298,9 @@ try {
         this.value = telefone;
     });
     
-    // Auto-fechamento dos alertas após 5 segundos
     window.addEventListener('DOMContentLoaded', (event) => {
-        // Seleciona todos os alertas
         const alerts = document.querySelectorAll('.alert');
         
-        // Para cada alerta, configura um timer para fechá-lo após 5 segundos
         alerts.forEach(alert => {
             setTimeout(() => {
                 const closeButton = alert.querySelector('.btn-close');
