@@ -1,4 +1,3 @@
-/* estilo.css */
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
@@ -38,7 +37,6 @@ ul.font li a:hover {
     display: block;
 }
 
-/* Sobrescrevendo botão warning do Bootstrap */
 .btn-warning {
     background-color: rgb(211, 108, 35);
     border-color: rgb(211, 108, 35);
